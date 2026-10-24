@@ -100,3 +100,12 @@ The visitor sees success if at least one channel worked; with none configured, e
   - `engine.ts`: renderer, lighting, camera, steam and sparkles. It only draws when the scroll position changes.
 - **Weight:** three.js and the assets load only as the visitor nears the tour, so they never delay the first paint.
 - **Hero:** a real house photo (`src/data/photos.ts`, Unsplash License) with a slow cinematic push-in.
+
+## Hosting on Cloudflare (Workers, via GitHub)
+
+The site runs as a Cloudflare Worker using the [OpenNext adapter](https://opennext.js.org/cloudflare) (`open-next.config.ts`, `wrangler.jsonc`).
+
+- **Builds:** Cloudflare Workers Builds deploys every push to `main`. Build command `npx opennextjs-cloudflare build`, deploy command `npx opennextjs-cloudflare deploy`.
+- **Page cache:** pre-built pages and cache tags are stored in one Workers KV namespace (bindings `NEXT_INC_CACHE_KV` and `NEXT_TAG_CACHE_KV` in `wrangler.jsonc`), so saving in /admin refreshes pages instantly.
+- **Settings:** public values are in `wrangler.jsonc` → `vars`. Secrets go in Cloudflare → Workers & Pages → the Worker → Settings → Variables and Secrets: `SUPABASE_SECRET_KEY`, `ADMIN_PASSWORD`, `EMAILJS_SERVICE_ID`, `EMAILJS_TEMPLATE_ID`, `EMAILJS_PUBLIC_KEY`, `EMAILJS_PRIVATE_KEY`. Also add `SUPABASE_SECRET_KEY` under Build → Variables and secrets so pages are pre-built with your saved services and prices.
+- **Manual deploy:** `npm run deploy:cf` (needs `npx wrangler login`). Building on Windows works but OpenNext recommends WSL or CI.
