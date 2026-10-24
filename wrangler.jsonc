@@ -1,0 +1,25 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  // Cloudflare Worker for the Next.js site, built with OpenNext.
+  // Cloudflare Workers Builds: build command `npm run build:cf`, deploy command `npx opennextjs-cloudflare deploy`.
+  "name": "cleaning-restoration-0800",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2025-09-01",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  // Page cache + cache tags (create one KV namespace in Cloudflare and paste its ID in both).
+  "kv_namespaces": [
+    { "binding": "NEXT_INC_CACHE_KV", "id": "REPLACE_WITH_KV_NAMESPACE_ID" },
+    { "binding": "NEXT_TAG_CACHE_KV", "id": "REPLACE_WITH_KV_NAMESPACE_ID" }
+  ],
+  // Public settings. Secrets (SUPABASE_SECRET_KEY, ADMIN_PASSWORD, EMAILJS_*) are added
+  // in Cloudflare → Workers & Pages → this Worker → Settings → Variables and Secrets.
+  "vars": {
+    "SUPABASE_URL": "https://xmiojutokjwizlhsoret.supabase.co",
+    "SUPABASE_PUBLISHABLE_KEY": "sb_publishable_C4-lMZJxabTIsV-vt1gVPw_phwUpjNP"
+  },
+  "observability": { "enabled": true }
+}
