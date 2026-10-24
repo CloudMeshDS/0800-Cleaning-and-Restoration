@@ -10,10 +10,10 @@
     "directory": ".open-next/assets",
     "binding": "ASSETS"
   },
-  // Page cache + cache tags (create one KV namespace in Cloudflare and paste its ID in both).
+  // Page cache + cache tags: KV namespace "cleaning-restoration-cache".
   "kv_namespaces": [
-    { "binding": "NEXT_INC_CACHE_KV", "id": "REPLACE_WITH_KV_NAMESPACE_ID" },
-    { "binding": "NEXT_TAG_CACHE_KV", "id": "REPLACE_WITH_KV_NAMESPACE_ID" }
+    { "binding": "NEXT_INC_CACHE_KV", "id": "1e9a8103b92b49c2a7c177a49148bc63" },
+    { "binding": "NEXT_TAG_CACHE_KV", "id": "1e9a8103b92b49c2a7c177a49148bc63" }
   ],
   // Public settings. Secrets (SUPABASE_SECRET_KEY, ADMIN_PASSWORD, EMAILJS_*) are added
   // in Cloudflare → Workers & Pages → this Worker → Settings → Variables and Secrets.
