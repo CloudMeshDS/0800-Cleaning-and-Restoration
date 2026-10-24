@@ -43,3 +43,40 @@ export async function isAdmin() {
   const good = sign(exp);
   return sig.length === good.length && timingSafeEqual(Buffer.from(sig), Buffer.from(good));
 }
+
+/* ─────────────── Brute-force protection (Cloudflare KV) ───────────────
+ * After MAX_FAILS wrong passwords from one IP, sign-in is locked for
+ * LOCK_SECONDS. Counts live in the Worker's KV namespace so every Cloudflare
+ * location shares them. Outside Cloudflare this is skipped.
+ */
+const MAX_FAILS = 8;
+const LOCK_SECONDS = 15 * 60;
+
+type KV = { get(k: string): Promise<string | null>; put(k: string, v: string, o?: { expirationTtl?: number }): Promise<void>; delete(k: string): Promise<void> };
+
+async function kv(): Promise<KV | null> {
+  try {
+    const { getCloudflareContext } = await import("@opennextjs/cloudflare");
+    return ((getCloudflareContext().env as Record<string, unknown>).NEXT_INC_CACHE_KV as KV) ?? null;
+  } catch {
+    return null;
+  }
+}
+
+const failKey = (ip: string) => `admin-login-fails:${ip}`;
+
+export async function loginLocked(ip: string) {
+  const store = await kv();
+  return store ? (Number(await store.get(failKey(ip))) || 0) >= MAX_FAILS : false;
+}
+
+export async function recordLoginFailure(ip: string) {
+  const store = await kv();
+  if (!store) return;
+  const n = (Number(await store.get(failKey(ip))) || 0) + 1;
+  await store.put(failKey(ip), String(n), { expirationTtl: LOCK_SECONDS });
+}
+
+export async function clearLoginFailures(ip: string) {
+  await (await kv())?.delete(failKey(ip));
+}

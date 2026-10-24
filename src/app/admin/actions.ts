@@ -3,17 +3,23 @@
 import { redirect } from "next/navigation";
 import { DEFAULT_PRICES, PER_UNITS_QTY, PRICE_UNITS, type GstTreatment, type PriceBasis, type PriceItem, type PriceOverride, type PriceUnit } from "@/data/pricing";
 import type { Category, Service } from "@/data/services";
-import { checkPassword, endSession, isAdmin, startSession } from "@/lib/admin-auth";
+import { headers } from "next/headers";
+import { checkPassword, clearLoginFailures, endSession, isAdmin, loginLocked, recordLoginFailure, startSession } from "@/lib/admin-auth";
 import { saveAll, type Overrides, type StoredCatalogue } from "@/lib/live-data";
 
 export type LoginState = { error?: string };
 
 export async function login(_: LoginState, form: FormData): Promise<LoginState> {
+  const h = await headers();
+  const ip = h.get("cf-connecting-ip") ?? h.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+  if (await loginLocked(ip)) return { error: "Too many attempts. Please wait 15 minutes and try again." };
   const attempt = String(form.get("password") ?? "");
   if (!checkPassword(attempt)) {
+    await recordLoginFailure(ip);
     await new Promise((r) => setTimeout(r, 800)); // slow down guessing
     return { error: "That password isn't right." };
   }
+  await clearLoginFailures(ip);
   await startSession();
   redirect("/admin");
 }
