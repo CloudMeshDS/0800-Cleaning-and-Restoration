@@ -21,5 +21,7 @@
     "SUPABASE_URL": "https://xmiojutokjwizlhsoret.supabase.co",
     "SUPABASE_PUBLISHABLE_KEY": "sb_publishable_C4-lMZJxabTIsV-vt1gVPw_phwUpjNP"
   },
+  // Keep variables added in the Cloudflare dashboard when deploying from GitHub.
+  "keep_vars": true,
   "observability": { "enabled": true }
 }
