@@ -4,10 +4,7 @@ export const PHONES = [
   { display: "+64 22 321 0362", tel: "tel:+64223210362", whatsapp: "https://wa.me/64223210362" },
 ] as const;
 
-/**
- * Business details. The email is still a placeholder – replace
- * it before launch.
- */
+/** Business details shown across the site (header, footer, structured data). */
 export const SITE = {
   name: "0800 Cleaning & Restoration",
   legalName: "0800 Cleaning & Restoration",
@@ -18,8 +15,7 @@ export const SITE = {
   phone: PHONES[0].display,
   phoneHref: PHONES[0].tel,
   whatsappHref: PHONES[0].whatsapp,
-  // TODO: replace with the real inbox before launch.
-  email: "hello@example.co.nz",
+  email: "0800cleaningandrestoration@gmail.com",
   hours: "Mon–Fri 7:30am–6pm · Sat 8am–2pm",
 } as const;
 
