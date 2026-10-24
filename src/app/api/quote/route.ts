@@ -88,7 +88,7 @@ export async function POST(req: Request) {
     console.info("[quote] New enquiry (no delivery configured):\n", JSON.stringify(enquiry, null, 2));
   } else {
     const results = await Promise.allSettled(channels.map(([, run]) => run()));
-    results.forEach((r, i) => r.status === "rejected" && console.error(`[quote] ${channels[i][0]} delivery failed for ${reference}`, r.reason));
+    results.forEach((r, i) => r.status === "rejected" && console.error(`[quote] ${channels[i][0]} delivery failed for ${reference}: ${r.reason instanceof Error ? r.reason.message : String(r.reason)}`));
     if (results.every((r) => r.status === "rejected")) {
       console.info("[quote] Undelivered enquiry:\n", JSON.stringify(enquiry, null, 2));
       return NextResponse.json({ ok: false, error: "We couldn't send your enquiry just now. Please try again or call us." }, { status: 502 });
