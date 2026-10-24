@@ -5,8 +5,8 @@ export const PHONES = [
 ] as const;
 
 /**
- * Business details. The email and site URL are still placeholders – replace
- * them before launch.
+ * Business details. The email is still a placeholder – replace
+ * it before launch.
  */
 export const SITE = {
   name: "0800 Cleaning & Restoration",
@@ -14,7 +14,7 @@ export const SITE = {
   tagline: "Clean Spaces. Extraordinary Living.",
   description:
     "Professional cleaning and property care for homes and businesses across New Zealand – carpets, curtains, upholstery, windows, floors and restoration.",
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.example.co.nz",
+  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.0800cleaningandrestoration.co.nz",
   phone: PHONES[0].display,
   phoneHref: PHONES[0].tel,
   whatsappHref: PHONES[0].whatsapp,
