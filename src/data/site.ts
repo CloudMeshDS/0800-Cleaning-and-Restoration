@@ -1,6 +1,6 @@
 /** Contact numbers – each takes calls and WhatsApp. The first is the primary line. */
 export const PHONES = [
-  { display: "+64 22 455 1700", tel: "tel:+64224551700", whatsapp: "https://wa.me/64224551700" },
+  { display: "+64 22 633 2500", tel: "tel:+64226332500", whatsapp: "https://wa.me/64226332500" },
   { display: "+64 22 321 0362", tel: "tel:+64223210362", whatsapp: "https://wa.me/64223210362" },
 ] as const;
 
