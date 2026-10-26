@@ -7,6 +7,7 @@ import { formatPrice, getPrice, PRICING_DISCLAIMER, startingPrice } from "@/data
 import { SITE } from "@/data/site";
 import { PriceTable } from "@/components/PriceTable";
 import { syncLive } from "@/lib/live-data";
+import { jsonLd as toJsonLd } from "@/lib/json-ld";
 import { ServiceMotion } from "@/components/stories/ServiceMotion";
 
 export async function generateStaticParams() {
@@ -178,7 +179,7 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
         </section>
       )}
 
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify([jsonLd, crumbs]) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: toJsonLd([jsonLd, crumbs]) }} />
     </>
   );
 }

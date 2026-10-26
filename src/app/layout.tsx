@@ -11,6 +11,7 @@ import { Logo } from "@/components/Logo";
 import { FloatingContact } from "@/components/Contact";
 import { LiveSync } from "@/components/LiveSync";
 import { syncLive } from "@/lib/live-data";
+import { jsonLd } from "@/lib/json-ld";
 import type { PriceTable } from "@/data/pricing";
 import { PHONES } from "@/data/site";
 
@@ -72,7 +73,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <Reveals />
         <Cursor />
         <FloatingContact />
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(orgJsonLd) }} />
       </body>
     </html>
   );

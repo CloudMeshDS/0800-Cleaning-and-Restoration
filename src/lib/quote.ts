@@ -145,7 +145,14 @@ export function validateAll(r: QuoteRequest): Errors {
 /** Coerce untrusted JSON into a QuoteRequest, dropping anything unknown. */
 export function sanitize(input: unknown): QuoteRequest {
   const o = (input && typeof input === "object" ? input : {}) as Record<string, unknown>;
-  const str = (v: unknown, max = 200) => (typeof v === "string" ? v.slice(0, max) : "");
+  // Strip invisible control characters; single-line fields also lose line breaks.
+  const clean = (v: unknown, max: number, multiline: boolean) =>
+    typeof v === "string"
+      ? v
+          .replace(multiline ? /[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/g : /[\u0000-\u001f\u007f]+/g, multiline ? "" : " ")
+          .slice(0, max)
+      : "";
+  const str = (v: unknown, max = 200) => clean(v, max, false);
   const services = Array.isArray(o.services) ? o.services.filter((s): s is string => typeof s === "string" && !!getService(s)).slice(0, 20) : [];
   const lines = Array.isArray(o.lines)
     ? (o.lines as unknown[])
@@ -163,7 +170,7 @@ export function sanitize(input: unknown): QuoteRequest {
     propertyType: str(o.propertyType),
     preferredDate: str(o.preferredDate, 10),
     preferredTime: str(o.preferredTime, 20),
-    details: str(o.details, 2000),
+    details: clean(o.details, 2000, true),
     name: str(o.name, 100),
     email: str(o.email, 200),
     phone: str(o.phone, 30),

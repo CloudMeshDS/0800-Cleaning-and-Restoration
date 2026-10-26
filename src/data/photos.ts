@@ -8,16 +8,18 @@
  */
 
 export interface Photo {
-  /** Unsplash photo id (the part after "photo-" in the CDN URL). */
+  /** Unsplash photo id; the image files live in public/assets/photos. */
   id: string;
   alt: string;
   /** CSS object-position: keeps the subject in frame when the photo is cropped. */
   position?: string;
 }
 
-const CDN = "https://images.unsplash.com/photo-";
-
-export const photoUrl = (id: string, w: number, q = 72) => `${CDN}${id}?auto=format&fit=crop&w=${w}&q=${q}`;
+/**
+ * Photos are self-hosted (public/assets/photos/{id}-{width}.webp) so visitors'
+ * browsers never contact a third-party image server.
+ */
+export const photoUrl = (id: string, w: number) => `/assets/photos/${id}-${w}.webp`;
 
 export const photoSrcSet = (id: string, widths = [640, 960, 1400, 1920, 2560]) => widths.map((w) => `${photoUrl(id, w)} ${w}w`).join(", ");
 

@@ -77,9 +77,7 @@ export async function saveEnquiry(e: Enquiry) {
   if (!res) return;
   const r = await res;
   if (r.status === 404) {
-    // Table not created yet (setup in progress): keep the enquiry in the server log instead.
-    console.warn("[quote] enquiries table missing – run supabase/002_enquiries.sql. Enquiry:\n", JSON.stringify(e, null, 2));
-    return;
+    throw new Error("enquiries table missing – run supabase/002_enquiries.sql");
   }
   if (!r.ok) throw new Error(`Supabase ${r.status}: ${(await r.text()).slice(0, 200)}`);
 }

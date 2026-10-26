@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { clientIp, hitLimit } from "@/lib/rate-limit";
 import { estimate, sanitize, validateAll } from "@/lib/quote";
 import { getService } from "@/data/services";
 import { syncLive } from "@/lib/live-data";
@@ -12,10 +13,11 @@ import { emailEnquiry, enquiryEmailOn, enquiryStorageOn, saveEnquiry, type Enqui
  *   - emailed to the business via Resend                 (RESEND_API_KEY + NOTIFY_EMAIL)
  *   - POSTed as JSON to a webhook (Zapier, Make, a CRM)   (QUOTE_WEBHOOK_URL)
  * The visitor sees success if at least one channel worked. With none
- * configured, enquiries are only logged to the server console.
+ * configured, nothing is stored. Customer details are never written to logs.
  */
 
-// Best-effort, per-instance rate limit. Use a shared store (e.g. Redis) at scale.
+// Rate limits: per visitor, plus a site-wide cap that protects the email quota
+// from spam waves. Shared via Cloudflare KV; in-memory fallback elsewhere.
 const hits = new Map<string, number[]>();
 const WINDOW_MS = 10 * 60 * 1000;
 const MAX_PER_WINDOW = 5;
@@ -30,9 +32,14 @@ function limited(ip: string) {
 
 export async function POST(req: Request) {
   await syncLive();
-  const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
-  if (limited(ip)) {
+  const ip = clientIp(req.headers);
+  const perVisitor = await hitLimit(`quote:${ip}`, MAX_PER_WINDOW, WINDOW_MS / 1000);
+  const siteWide = await hitLimit("quote:all", 60, 60 * 60);
+  if (perVisitor ?? limited(ip)) {
     return NextResponse.json({ ok: false, error: "Too many requests. Please try again shortly or call us." }, { status: 429 });
+  }
+  if (siteWide) {
+    return NextResponse.json({ ok: false, error: "We're receiving a lot of requests right now. Please call or WhatsApp us instead." }, { status: 429 });
   }
 
   let body: unknown;
@@ -43,7 +50,7 @@ export async function POST(req: Request) {
   }
 
   const data = sanitize(body);
-  const reference = `CR-${Date.now().toString(36).toUpperCase().slice(-6)}`;
+  const reference = `CR-${Date.now().toString(36).toUpperCase().slice(-5)}${crypto.randomUUID().replace(/-/g, "").slice(0, 4).toUpperCase()}`;
 
   // Honeypot: pretend success so bots learn nothing.
   if (data.website) return NextResponse.json({ ok: true, reference });
@@ -85,12 +92,12 @@ export async function POST(req: Request) {
     ]);
 
   if (!channels.length) {
-    console.info("[quote] New enquiry (no delivery configured):\n", JSON.stringify(enquiry, null, 2));
+    console.warn(`[quote] No delivery channel configured – enquiry ${reference} was not stored`);
   } else {
     const results = await Promise.allSettled(channels.map(([, run]) => run()));
     results.forEach((r, i) => r.status === "rejected" && console.error(`[quote] ${channels[i][0]} delivery failed for ${reference}: ${r.reason instanceof Error ? r.reason.message : String(r.reason)}`));
     if (results.every((r) => r.status === "rejected")) {
-      console.info("[quote] Undelivered enquiry:\n", JSON.stringify(enquiry, null, 2));
+      console.error(`[quote] Enquiry ${reference} could not be delivered to any channel`);
       return NextResponse.json({ ok: false, error: "We couldn't send your enquiry just now. Please try again or call us." }, { status: 502 });
     }
   }

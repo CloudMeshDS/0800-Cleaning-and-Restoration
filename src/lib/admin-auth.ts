@@ -1,5 +1,6 @@
 import { createHash, createHmac, timingSafeEqual } from "crypto";
 import { cookies } from "next/headers";
+import { kv } from "./rate-limit";
 
 /**
  * Single shared admin password, set as the ADMIN_PASSWORD secret in the Cloudflare Worker's
@@ -51,17 +52,6 @@ export async function isAdmin() {
  */
 const MAX_FAILS = 8;
 const LOCK_SECONDS = 15 * 60;
-
-type KV = { get(k: string): Promise<string | null>; put(k: string, v: string, o?: { expirationTtl?: number }): Promise<void>; delete(k: string): Promise<void> };
-
-async function kv(): Promise<KV | null> {
-  try {
-    const { getCloudflareContext } = await import("@opennextjs/cloudflare");
-    return ((getCloudflareContext().env as Record<string, unknown>).NEXT_INC_CACHE_KV as KV) ?? null;
-  } catch {
-    return null;
-  }
-}
 
 const failKey = (ip: string) => `admin-login-fails:${ip}`;
 

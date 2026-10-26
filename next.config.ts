@@ -6,14 +6,14 @@ export default function config(phase: string): NextConfig {
 
   /**
    * Content Security Policy: the browser may only load code, styles, data and
-   * frames from this site (plus the Unsplash hero photo). Supabase and EmailJS
+   * frames from this site. Supabase and EmailJS
    * are only ever called from the server. Next.js needs inline scripts/styles.
    */
   const csp = [
     "default-src 'self'",
     `script-src 'self' 'unsafe-inline'${dev ? " 'unsafe-eval'" : ""}`,
     "style-src 'self' 'unsafe-inline'",
-    "img-src 'self' data: blob: https://images.unsplash.com",
+    "img-src 'self' data: blob:",
     "font-src 'self' data:",
     `connect-src 'self' blob: data:${dev ? " ws:" : ""}`,
     "media-src 'self'",
