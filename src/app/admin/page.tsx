@@ -30,12 +30,12 @@ export default async function AdminPage() {
       </div>
       {!storageConnected() && (
         <p role="alert" className="mt-6 rounded-2xl bg-amber-50 px-5 py-4 text-sm text-amber-900">
-          Saving is switched off: add your Supabase <strong>secret key</strong> as <code>SUPABASE_SECRET_KEY</code> in the Vercel project&apos;s environment variables, then redeploy.
+          Saving is switched off: add your Supabase <strong>secret key</strong> as a Secret named <code>SUPABASE_SECRET_KEY</code> in Cloudflare (Worker → Settings → Variables and Secrets).
         </p>
       )}
       {!enquiryEmailOn() && (
         <p className="mt-3 rounded-2xl bg-ivory px-5 py-3 text-sm text-charcoal/70 ring-1 ring-charcoal/10">
-          Email notifications are off. Add your EmailJS keys (<code>EMAILJS_SERVICE_ID</code>, <code>EMAILJS_TEMPLATE_ID</code>, <code>EMAILJS_PUBLIC_KEY</code>, <code>EMAILJS_PRIVATE_KEY</code>) in Vercel to get an email for every new enquiry.
+          Email notifications are off. Add your EmailJS keys (<code>EMAILJS_SERVICE_ID</code>, <code>EMAILJS_TEMPLATE_ID</code>, <code>EMAILJS_PUBLIC_KEY</code>, <code>EMAILJS_PRIVATE_KEY</code>) in Cloudflare (Worker → Settings → Variables and Secrets) to get an email for every new enquiry.
         </p>
       )}
       <AdminApp

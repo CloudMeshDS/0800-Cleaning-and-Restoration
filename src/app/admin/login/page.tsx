@@ -17,7 +17,7 @@ export default async function AdminLogin() {
           <LoginForm />
         ) : (
           <p className="mt-5 text-sm leading-relaxed text-charcoal/70">
-            The admin area isn&apos;t switched on yet. Add an <code>ADMIN_PASSWORD</code> (10+ characters) in the Vercel project&apos;s environment variables, then redeploy.
+            The admin area isn&apos;t switched on yet. Add an <code>ADMIN_PASSWORD</code> (10+ characters) as a Secret in Cloudflare (Worker → Settings → Variables and Secrets).
           </p>
         )}
       </div>

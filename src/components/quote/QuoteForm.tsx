@@ -526,7 +526,13 @@ function ContactStep({ req, errors, set }: { req: QuoteRequest; errors: Errors; 
               aria-invalid={!!errors.consent}
               aria-describedby={errors.consent ? "consent-err" : undefined}
             />
-            I agree to {SITE.legalName} contacting me about this enquiry. My details won&apos;t be used for marketing without my permission.
+            <span>
+              I agree to {SITE.legalName} contacting me about this enquiry. My details won&apos;t be used for marketing without my permission. See our{" "}
+              <Link href="/privacy" target="_blank" className="font-semibold text-forest underline underline-offset-2">
+                Privacy Policy
+              </Link>
+              .
+            </span>
           </label>
           {errors.consent && (
             <p id="consent-err" className="mt-1.5 text-sm text-red-700">

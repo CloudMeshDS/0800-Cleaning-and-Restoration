@@ -59,7 +59,17 @@ export function SiteFooter() {
       <div className="border-t border-brass/20">
         <div className="container-x flex flex-col gap-4 py-8 text-xs text-ivory/45 md:flex-row md:items-start md:justify-between">
           <p className="max-w-2xl leading-relaxed">{PRICING_DISCLAIMER}</p>
-          <p className="shrink-0">© {new Date().getFullYear()} {SITE.legalName}</p>
+          <div className="flex shrink-0 flex-col gap-2 md:items-end">
+            <nav aria-label="Legal" className="flex gap-4 text-ivory/70">
+              <Link href="/privacy" className="hover:text-ivory hover:underline">
+                Privacy Policy
+              </Link>
+              <Link href="/terms" className="hover:text-ivory hover:underline">
+                Terms &amp; Conditions
+              </Link>
+            </nav>
+            <p>© {new Date().getFullYear()} {SITE.legalName}</p>
+          </div>
         </div>
       </div>
     </footer>

@@ -5,6 +5,7 @@ import { useRef } from "react";
 import { ArrowRight, Check } from "lucide-react";
 import { gsap, useGSAP, MQ, ScrollTrigger } from "@/lib/gsap";
 import { SCRUB } from "../stories/StoryScene";
+import { SERVICES } from "@/data/services";
 import { FINALE, TASKS } from "./timeline";
 import type { Walkthrough as Engine } from "./engine";
 
@@ -239,7 +240,7 @@ export function Walkthrough() {
                 </Link>
               </li>
             ))}
-            <li className="pt-1 text-xs text-charcoal/50">+ 9 more services</li>
+            {SERVICES.length > CHECKS.length && <li className="pt-1 text-xs text-charcoal/50">+ {SERVICES.length - CHECKS.length} more services</li>}
           </ul>
         </div>
       </div>

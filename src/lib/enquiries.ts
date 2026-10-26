@@ -3,7 +3,7 @@
  * `enquiries`, see supabase/002_enquiries.sql) for the admin area, and emailed
  * to the business via Resend. Each channel is optional and independent.
  *
- * Env (Vercel → Settings → Environment Variables):
+ * Env (Cloudflare → Worker → Settings → Variables and Secrets):
  *   SUPABASE_SECRET_KEY  – already set; enables saving + the admin list
  *
  *   Notification email via EmailJS (sent from the server, keys never reach the browser):

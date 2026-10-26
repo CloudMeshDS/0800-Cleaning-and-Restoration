@@ -2,7 +2,7 @@ import { createHash, createHmac, timingSafeEqual } from "crypto";
 import { cookies } from "next/headers";
 
 /**
- * Single shared admin password, set as ADMIN_PASSWORD in the Vercel project's
+ * Single shared admin password, set as the ADMIN_PASSWORD secret in the Cloudflare Worker's
  * environment variables (at least 10 characters). Sessions are a signed,
  * HTTP-only cookie valid for 12 hours; changing the password signs everyone out.
  */

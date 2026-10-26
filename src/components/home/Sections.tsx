@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { CSSProperties } from "react";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
-import { CATEGORIES, getService, servicesIn } from "@/data/services";
+import { CATEGORIES, getService, SERVICES, servicesIn } from "@/data/services";
 import { formatPrice, getPrice, PRICING_DISCLAIMER, startingPrice, type PriceId } from "@/data/pricing";
 
 /** Stagger helper for `[data-reveal]` items. */
@@ -48,7 +48,7 @@ export function CatalogueIndex() {
             </h2>
           </div>
           <p data-reveal style={rd(1)} className="max-w-md text-[1.05rem] leading-relaxed text-charcoal/70 md:justify-self-end">
-            Over fifty services across seven disciplines – each with clear scope notes and indicative pricing you can see before you ask.
+            {SERVICES.length} services across {CATEGORIES.length} categories – each with clear scope notes and indicative pricing you can see before you ask.
           </p>
         </div>
 
