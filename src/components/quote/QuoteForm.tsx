@@ -7,6 +7,7 @@ import { CATEGORIES, getService, SERVICES, type CategoryId } from "@/data/servic
 import { formatNZD, formatPrice, PRICING_DISCLAIMER, unitLabel, type PriceId } from "@/data/pricing";
 import { SERVICE_REGIONS, SITE } from "@/data/site";
 import { ContactList } from "../Contact";
+import { Turnstile } from "./Turnstile";
 import {
   defaultLines,
   emptyRequest,
@@ -32,6 +33,8 @@ export function QuoteForm({ initialServices, initialType, initialCategory }: { i
   const [status, setStatus] = useState<"idle" | "sending" | "done" | "error">("idle");
   const [serverError, setServerError] = useState("");
   const [reference, setReference] = useState("");
+  const [botToken, setBotToken] = useState("");
+  const [botReset, setBotReset] = useState(0);
   const formRef = useRef<HTMLFormElement>(null);
 
   const set = <K extends keyof QuoteRequest>(k: K, v: QuoteRequest[K]) => {
@@ -81,15 +84,25 @@ export function QuoteForm({ initialServices, initialType, initialCategory }: { i
     const e = validateStep(2, req);
     setErrors(e);
     if (Object.keys(e).length) return focusFirstError();
+    if (!botToken) {
+      setServerError(`Please wait a moment for the security check to finish, then try again. If it keeps failing, call ${SITE.phone}.`);
+      setStatus("error");
+      return;
+    }
     setStatus("sending");
     setServerError("");
     try {
-      const res = await fetch("/api/quote", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(req) });
+      const res = await fetch("/api/quote", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...req, turnstileToken: botToken }),
+      });
       const json = await res.json();
       if (!res.ok || !json.ok) {
         setServerError(json.error ?? "Something went wrong.");
         if (json.errors) setErrors(json.errors);
         setStatus("error");
+        setBotReset((n) => n + 1);
         return;
       }
       setReference(json.reference);
@@ -98,6 +111,7 @@ export function QuoteForm({ initialServices, initialType, initialCategory }: { i
     } catch {
       setServerError(`We couldn't reach our server. Please try again or call ${SITE.phone}.`);
       setStatus("error");
+      setBotReset((n) => n + 1);
     }
   };
 
@@ -159,6 +173,11 @@ export function QuoteForm({ initialServices, initialType, initialCategory }: { i
           )}
           {step === 1 && <PropertyStep req={req} errors={errors} set={set} />}
           {step === 2 && <ContactStep req={req} errors={errors} set={set} />}
+          {step === 2 && (
+            <div className="mt-6">
+              <Turnstile onToken={setBotToken} resetKey={botReset} />
+            </div>
+          )}
         </div>
 
         {serverError && (

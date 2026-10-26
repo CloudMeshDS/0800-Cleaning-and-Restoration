@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { clientIp, hitLimit } from "@/lib/rate-limit";
+import { verifyTurnstile } from "@/lib/turnstile";
 import { estimate, sanitize, validateAll } from "@/lib/quote";
 import { getService } from "@/data/services";
 import { syncLive } from "@/lib/live-data";
@@ -54,6 +55,10 @@ export async function POST(req: Request) {
 
   // Honeypot: pretend success so bots learn nothing.
   if (data.website) return NextResponse.json({ ok: true, reference });
+
+  if (!(await verifyTurnstile((body as { turnstileToken?: unknown } | null)?.turnstileToken, ip))) {
+    return NextResponse.json({ ok: false, error: "The security check didn't complete. Please try again, or call us." }, { status: 403 });
+  }
 
   const errors = validateAll(data);
   if (Object.keys(errors).length) {

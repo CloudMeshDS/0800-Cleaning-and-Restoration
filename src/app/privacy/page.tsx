@@ -51,7 +51,7 @@ export default function PrivacyPage() {
         <p>We use a small number of trusted service providers to run the website and handle enquiries. They process information on our behalf and only as needed to provide their service:</p>
         <ul>
           <li>
-            <strong>Cloudflare</strong> – hosts the website and protects it from attacks
+            <strong>Cloudflare</strong> – hosts the website and protects it from attacks. Our quote form uses Cloudflare Turnstile, which checks technical signals from your browser to confirm a person, not a bot, is sending the enquiry
           </li>
           <li>
             <strong>Supabase</strong> – securely stores enquiries and website settings
