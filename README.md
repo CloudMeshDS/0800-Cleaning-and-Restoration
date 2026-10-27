@@ -24,7 +24,7 @@ npm run typecheck
 
 - **All prices** live in [`src/data/pricing.ts`](src/data/pricing.ts). Nothing else hardcodes a figure.
 - **All services** live in [`src/data/services.ts`](src/data/services.ts) and reference prices by ID.
-- **Business details** live in [`src/data/site.ts`](src/data/site.ts). The two phone numbers (`PHONES`) take calls and WhatsApp and feed the header, footer, quote page and floating contact button. The contact email is 0800cleaningandrestoration@gmail.com and the site address is https://www.0800cleaningandrestoration.co.nz.
+- **Business details** live in [`src/data/site.ts`](src/data/site.ts). The two phone numbers (`PHONES`) take calls and WhatsApp and feed the header, footer, quote page and floating contact button. The contact email is sales@0800cleaningandrestoration.co.nz and the site address is https://www.0800cleaningandrestoration.co.nz.
 
 ### Before launch – pricing to confirm
 

@@ -15,7 +15,7 @@ export const SITE = {
   phone: PHONES[0].display,
   phoneHref: PHONES[0].tel,
   whatsappHref: PHONES[0].whatsapp,
-  email: "0800cleaningandrestoration@gmail.com",
+  email: "sales@0800cleaningandrestoration.co.nz",
   hours: "Mon–Fri 7:30am–6pm · Sat 8am–2pm",
 } as const;
 
