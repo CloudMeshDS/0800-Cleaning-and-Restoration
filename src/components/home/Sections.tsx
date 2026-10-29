@@ -36,7 +36,7 @@ export function Marquee() {
 
 export function CatalogueIndex() {
   return (
-    <section className="bg-ivory py-28 md:py-40" aria-labelledby="catalogue-title">
+    <section id="catalogue" className="scroll-mt-20 bg-ivory py-28 md:py-40" aria-labelledby="catalogue-title">
       <div className="container-x">
         <div className="grid gap-8 md:grid-cols-[1fr_1fr] md:items-end">
           <div data-reveal>

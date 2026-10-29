@@ -75,7 +75,7 @@ export function Hero() {
 
       {/* Scroll cue */}
       <a
-        href="#home-tour"
+        href="#catalogue"
         className="rise absolute bottom-7 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-3 text-[0.68rem] font-semibold uppercase tracking-[0.25em] text-white/70 md:flex"
         style={{ "--d": "1.2s" } as React.CSSProperties}
       >

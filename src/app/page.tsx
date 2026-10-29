@@ -8,10 +8,10 @@ export default async function HomePage() {
   return (
     <>
       <Hero />
-      <Walkthrough />
-      <Marquee />
       <CatalogueIndex />
       <PricingHighlights />
+      <Walkthrough />
+      <Marquee />
       <Process />
       <FinalCta />
     </>
