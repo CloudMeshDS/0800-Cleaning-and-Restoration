@@ -157,6 +157,10 @@ export const PRICES = {
     uncertain: "Confirm whether this rate includes the finish coats and any minimum charge.",
   }),
   stairSanding: p({ id: "stairSanding", label: "Per stair", amount: 135, unit: "step", basis: "fixed", gst: "unconfirmed", quantifiable: true }),
+  tileGrout: p({ id: "tileGrout", label: "Tile & Grout Revive", amount: 15, unit: "m2", basis: "fixed", gst: "unconfirmed", quantifiable: true }),
+  floorSealing: p({ id: "floorSealing", label: "Surface Seal", amount: 10, unit: "m2", basis: "addon", gst: "unconfirmed", quantifiable: true }),
+  vinylClean: p({ id: "vinylClean", label: "Vinyl clean", amount: 8, unit: "m2", basis: "fixed", gst: "unconfirmed", quantifiable: true }),
+  vinylStrip: p({ id: "vinylStrip", label: "Strip & re-polish", amount: 12, unit: "m2", basis: "fixed", gst: "unconfirmed", quantifiable: true }),
 
   /* ───────────────────────── EXTERIOR & WINDOWS ───────────────────────── */
   houseWash1br: p({ id: "houseWash1br", label: "Studio / 1-bed", amount: 218, unit: "property", basis: "fixed", gst: "unconfirmed" }),
