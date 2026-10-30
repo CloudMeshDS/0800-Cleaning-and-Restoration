@@ -6,7 +6,7 @@ import { PRICING_DISCLAIMER } from "@/data/pricing";
 
 export const metadata: Metadata = {
   title: "Services",
-  description: "Cleaning, restoration and floor services across New Zealand – carpets, curtains, blinds, upholstery, homes, workplaces, windows, ovens, flood, mould, meth, tiles and vinyl – with indicative pricing.",
+  description: "Cleaning and restoration services across New Zealand – carpets, curtains, blinds, upholstery, homes, workplaces, windows, ovens, flood, mould and meth – with indicative pricing.",
   alternates: { canonical: "/services" },
 };
 

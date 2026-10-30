@@ -4,12 +4,10 @@ import Link from "next/link";
 import { useRef } from "react";
 import { ArrowRight } from "lucide-react";
 import { gsap, useGSAP, MQ } from "@/lib/gsap";
-import { PHOTOS } from "@/data/photos";
-import { PhotoImg } from "../photo/DirtyPhoto";
 
 /**
- * Full-screen photographic hero with a slow cinematic push-in. Scrolling
- * carries the camera forward into the fly-through below.
+ * Full-screen hero on the brand's deep forest green, with a soft brass glow
+ * that drifts in slowly and pushes in as the visitor scrolls.
  */
 export function Hero() {
   const root = useRef<HTMLElement>(null);
@@ -22,7 +20,7 @@ export function Hero() {
       mm.add(MQ.motion, () => {
         gsap.fromTo("[data-hero-kb]", { scale: 1.14, xPercent: 1.5 }, { scale: 1.02, xPercent: 0, duration: 10, ease: "sine.out" });
 
-        // Scroll: the camera pushes in towards the front of the house.
+        // Scroll: the glow pushes in as the page moves on.
         gsap.to("[data-hero-cam]", {
           scale: 1.25,
           yPercent: 4,
@@ -36,16 +34,13 @@ export function Hero() {
   );
 
   return (
-    <section ref={root} className="relative h-[100svh] min-h-[640px] overflow-hidden bg-charcoal" aria-labelledby="hero-title">
-      <div data-hero-cam className="absolute inset-0 origin-[60%_60%] will-change-transform">
-        <div data-hero-kb className="absolute inset-0 will-change-transform">
-          <PhotoImg photo={PHOTOS.hero} priority />
-        </div>
+    <section ref={root} className="relative h-[100svh] min-h-[640px] overflow-hidden bg-forest-deep" aria-labelledby="hero-title">
+      <div data-hero-cam className="absolute inset-0 origin-[60%_60%] will-change-transform" aria-hidden>
+        <div
+          data-hero-kb
+          className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_78%_35%,rgb(176_141_87/0.28),transparent_65%),radial-gradient(ellipse_60%_55%_at_15%_90%,rgb(168_184_165/0.16),transparent_70%),linear-gradient(135deg,var(--color-forest)_0%,var(--color-forest-deep)_100%)] will-change-transform"
+        />
       </div>
-
-      {/* Legibility scrims */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-44 bg-gradient-to-b from-black/50 to-transparent" aria-hidden />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-black/30 to-transparent md:bg-gradient-to-r md:from-black/70 md:via-black/25 md:to-transparent md:to-[70%]" aria-hidden />
 
       {/* Copy */}
       <div className="container-x relative flex h-full flex-col justify-end pb-20 md:justify-center md:pb-0">
