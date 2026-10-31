@@ -4,10 +4,13 @@ import Link from "next/link";
 import { useRef } from "react";
 import { ArrowRight } from "lucide-react";
 import { gsap, useGSAP, MQ } from "@/lib/gsap";
+import { PHOTOS } from "@/data/photos";
+import { PhotoImg } from "../photo/DirtyPhoto";
+import { GlassWipe } from "./GlassWipe";
 
 /**
- * Full-screen hero on the brand's deep forest green, with a soft brass glow
- * that drifts in slowly and pushes in as the visitor scrolls.
+ * Full-screen photographic hero with a slow cinematic push-in. Scrolling
+ * pushes in a little further towards the services below.
  */
 export function Hero() {
   const root = useRef<HTMLElement>(null);
@@ -20,7 +23,7 @@ export function Hero() {
       mm.add(MQ.motion, () => {
         gsap.fromTo("[data-hero-kb]", { scale: 1.14, xPercent: 1.5 }, { scale: 1.02, xPercent: 0, duration: 10, ease: "sine.out" });
 
-        // Scroll: the glow pushes in as the page moves on.
+        // Scroll: the camera pushes in on the photo.
         gsap.to("[data-hero-cam]", {
           scale: 1.25,
           yPercent: 4,
@@ -34,22 +37,30 @@ export function Hero() {
   );
 
   return (
-    <section ref={root} className="relative h-[100svh] min-h-[640px] overflow-hidden bg-forest-deep" aria-labelledby="hero-title">
-      <div data-hero-cam className="absolute inset-0 origin-[60%_60%] will-change-transform" aria-hidden>
-        <div
-          data-hero-kb
-          className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_78%_35%,rgb(176_141_87/0.28),transparent_65%),radial-gradient(ellipse_60%_55%_at_15%_90%,rgb(168_184_165/0.16),transparent_70%),linear-gradient(135deg,var(--color-forest)_0%,var(--color-forest-deep)_100%)] will-change-transform"
-        />
+    <section ref={root} className="relative h-[100svh] min-h-[640px] overflow-hidden bg-charcoal [--hero-pos:52%_50%] md:[--hero-pos:50%_63%]" aria-labelledby="hero-title">
+      <div data-hero-cam className="absolute inset-0 origin-[60%_60%] will-change-transform">
+        <div data-hero-kb className="absolute inset-0 will-change-transform">
+          {/* On phones the photo runs up behind the header, lifting the skyline above the copy. */}
+          <div className="absolute inset-x-0 -top-[22%] bottom-0 md:top-0">
+            <PhotoImg photo={PHOTOS.hero} priority style={{ objectPosition: "var(--hero-pos)" }} />
+          </div>
+        </div>
       </div>
 
+      <GlassWipe />
+
+      {/* Legibility scrims */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-44 bg-gradient-to-b from-black/50 to-transparent" aria-hidden />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 via-45% to-transparent to-70%" aria-hidden />
+
       {/* Copy */}
-      <div className="container-x relative flex h-full flex-col justify-end pb-20 md:justify-center md:pb-0">
+      <div className="container-x relative flex h-full flex-col justify-end pb-20 md:pb-28">
         <div className="max-w-[640px]">
           <p className="rise eyebrow !text-white/85" style={{ "--d": "0.15s" } as React.CSSProperties}>
             Property care · Aotearoa <span className="sm:hidden">NZ</span>
             <span className="hidden sm:inline">New Zealand</span>
           </p>
-          <h1 id="hero-title" className="display rise mt-5 text-[clamp(2.6rem,6.6vw,6rem)] text-white drop-shadow-[0_2px_24px_rgb(0_0_0/0.35)]" style={{ "--d": "0.3s" } as React.CSSProperties}>
+          <h1 id="hero-title" className="display rise mt-5 text-[clamp(2.6rem,5.2vw,5rem)] text-white drop-shadow-[0_2px_24px_rgb(0_0_0/0.35)]" style={{ "--d": "0.3s" } as React.CSSProperties}>
             Clean Spaces.
             <br />
             <em className="font-normal italic text-brass-soft">Extraordinary</em> Living.
