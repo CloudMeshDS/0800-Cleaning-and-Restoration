@@ -24,7 +24,7 @@ export const photoUrl = (id: string, w: number) => `/assets/photos/${id}-${w}.we
 export const photoSrcSet = (id: string, widths = [640, 960, 1400, 1920, 2560]) => widths.map((w) => `${photoUrl(id, w)} ${w}w`).join(", ");
 
 export const PHOTOS = {
-  hero: { id: "1595125989588-36d745a2a828", alt: "The Auckland city skyline and Sky Tower across the harbour at golden hour", position: "50% 63%" },
+  hero: { id: "auckland-home-clean", alt: "A cleaner wiping a large window with the Auckland harbour, skyline and Sky Tower beyond", position: "50% 50%" },
   exterior: { id: "1783125127341-81112b795c23", alt: "A white modern house with garage doors and a wide concrete driveway", position: "55% 60%" },
   windows: { id: "1656122381069-9ec666d95cf1", alt: "A bright living room with tall windows looking onto greenery", position: "50% 35%" },
   curtains: { id: "1691036562132-56a310d4b789", alt: "Cream curtains beside a tall black-framed window", position: "55% 40%" },

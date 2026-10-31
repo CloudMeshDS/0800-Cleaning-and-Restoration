@@ -6,7 +6,6 @@ import { ArrowRight } from "lucide-react";
 import { gsap, useGSAP, MQ } from "@/lib/gsap";
 import { PHOTOS } from "@/data/photos";
 import { PhotoImg } from "../photo/DirtyPhoto";
-import { GlassWipe } from "./GlassWipe";
 
 /**
  * Full-screen photographic hero with a slow cinematic push-in. Scrolling
@@ -37,26 +36,27 @@ export function Hero() {
   );
 
   return (
-    <section ref={root} className="relative h-[100svh] min-h-[640px] overflow-hidden bg-charcoal [--hero-pos:52%_50%] md:[--hero-pos:50%_63%]" aria-labelledby="hero-title">
+    <section ref={root} className="relative h-[100svh] min-h-[640px] overflow-hidden bg-charcoal [--hero-pos:23%_50%] md:[--hero-pos:50%_50%]" aria-labelledby="hero-title">
       <div data-hero-cam className="absolute inset-0 origin-[60%_60%] will-change-transform">
         <div data-hero-kb className="absolute inset-0 will-change-transform">
-          {/* On phones the photo runs up behind the header, lifting the skyline above the copy. */}
-          <div className="absolute inset-x-0 -top-[22%] bottom-0 md:top-0">
+          {/* On phones the photo fills the top of the screen, wide enough to show the cleaner and the Sky Tower. */}
+          <div className="absolute inset-x-0 top-0 bottom-[42%] md:bottom-0">
             <PhotoImg photo={PHOTOS.hero} priority style={{ objectPosition: "var(--hero-pos)" }} />
           </div>
         </div>
       </div>
 
-      <GlassWipe />
-
       {/* Legibility scrims */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-44 bg-gradient-to-b from-black/50 to-transparent" aria-hidden />
+      <div className="pointer-events-none absolute inset-x-0 top-[36%] h-[22%] bg-gradient-to-b from-transparent to-charcoal md:hidden" aria-hidden />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-44 bg-gradient-to-b from-black/65 to-transparent" aria-hidden />
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 via-45% to-transparent to-70%" aria-hidden />
+
+      <div className="pointer-events-none absolute inset-0 hidden bg-gradient-to-l from-black/60 via-black/25 via-35% to-transparent to-60% md:block" aria-hidden />
 
       {/* Copy */}
       <div className="container-x relative flex h-full flex-col justify-end pb-20 md:pb-28">
-        <div className="max-w-[640px]">
-          <p className="rise eyebrow !text-white/85" style={{ "--d": "0.15s" } as React.CSSProperties}>
+        <div className="max-w-[640px] md:ml-auto md:text-right">
+          <p className="rise eyebrow !text-white/85 md:justify-end" style={{ "--d": "0.15s" } as React.CSSProperties}>
             Property care · Aotearoa <span className="sm:hidden">NZ</span>
             <span className="hidden sm:inline">New Zealand</span>
           </p>
@@ -65,10 +65,10 @@ export function Hero() {
             <br />
             <em className="font-normal italic text-brass-soft">Extraordinary</em> Living.
           </h1>
-          <p className="rise mt-5 max-w-md text-base leading-relaxed text-white/85 sm:mt-7 sm:text-lg" style={{ "--d": "0.55s" } as React.CSSProperties}>
+          <p className="rise mt-5 max-w-md text-base md:ml-auto leading-relaxed text-white/85 sm:mt-7 sm:text-lg" style={{ "--d": "0.55s" } as React.CSSProperties}>
             Professional cleaning and property care for homes and businesses across New Zealand.
           </p>
-          <div className="rise mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap" style={{ "--d": "0.75s" } as React.CSSProperties}>
+          <div className="rise mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap md:justify-end" style={{ "--d": "0.75s" } as React.CSSProperties}>
             <Link href="/quote" className="btn-light">
               Get a Free Quote <ArrowRight className="size-4" aria-hidden />
             </Link>
