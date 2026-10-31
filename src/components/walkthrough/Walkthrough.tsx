@@ -22,7 +22,7 @@ const lead = 0.025;
 const BEATS: Beat[] = [
   { at: 0, eyebrow: "The 0800 home tour", title: "Welcome home.", body: "Scroll to walk through the gate and watch each room cared for." },
   { at: TASKS.floor[0] - lead, eyebrow: "01 · Home Refresh", title: "Floors that glow again.", body: "Muddy footprints and grit lifted with professional microfibre.", href: "/services/home-refresh", check: "Home Refresh", done: TASKS.floor[1] },
-  { at: TASKS.tiles[0] - lead, eyebrow: "02 · Home Refresh", title: "Kitchen, back to bright.", body: "Grease and grime wiped from benches, splashbacks and tiles.", href: "/services/home-refresh", check: "Kitchen & Bathroom", done: TASKS.tiles[1] },
+  { at: TASKS.tiles[0] - lead, eyebrow: "02 · Tile & Grout Revive", title: "Grout, back to bright.", body: "Grease and grime scrubbed from tiles and porous grout lines.", href: "/services/tile-grout-revive", check: "Tile & Grout Revive", done: TASKS.tiles[1] },
   { at: TASKS.curtains[0] - lead, eyebrow: "03 · Curtain Care & Rehang", title: "Curtains, fresh again.", body: "Dust and marks lifted with methods matched to the fabric.", href: "/services/curtain-care", check: "Curtain Care", done: TASKS.curtains[1] },
   { at: TASKS.carpet[0] - lead, eyebrow: "04 · Carpet Deep Refresh", title: "Carpet, deep down clean.", body: "Deep vacuuming, then hot-water extraction for stains and traffic lanes.", href: "/services/carpet-deep-refresh", check: "Carpet Deep Refresh", done: TASKS.carpet[1] },
   { at: TASKS.sofa[0] - lead, eyebrow: "05 · Sofa & Upholstery Refresh", title: "Sofas, refreshed.", body: "Fabric-safe extraction for cushions, seats and backs.", href: "/services/sofa-upholstery-refresh", check: "Sofa & Upholstery", done: TASKS.sofa[1] },

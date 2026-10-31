@@ -17,6 +17,7 @@ export const DEFAULT_CATEGORIES: Category[] = [
   { id: "residential", name: "Home Care", blurb: "Regular cleans, move-out detailing, post-build cleans, windows and ovens." },
   { id: "commercial", name: "Workplace Care", blurb: "Scheduled cleaning for offices and business premises, plus post-build handovers." },
   { id: "restoration", name: "Recovery & Specialist", blurb: "Flood and water damage, mould, and meth testing and decontamination." },
+  { id: "floor-care", name: "Floors & Surfaces", blurb: "Tile and grout revived, vinyl cleaned and polished." },
 ];
 
 export interface Service {
@@ -206,6 +207,28 @@ export const DEFAULT_SERVICES: Service[] = [
     priceIds: ["meth13", "meth46", "meth79", "meth1012", "methExpress"],
     keywords: ["meth test", "meth cleanup", "methamphetamine", "decontamination"],
   },
+  {
+    slug: "tile-grout-revive",
+    name: "Tile & Grout Revive",
+    categories: ["floor-care"],
+    summary: "Deep cleaning that lifts grime from tile surfaces and porous grout lines.",
+    description: "High-pressure, contained cleaning removes built-up soil from grout lines. Sealing is available afterwards to help grout stay cleaner for longer.",
+    includes: ["Pre-treatment", "Machine and detail cleaning", "Rinse and extraction"],
+    considerations: ["Sealing is an add-on", "Damaged or missing grout isn't repaired by cleaning"],
+    priceIds: ["tileGrout", "floorSealing"],
+    keywords: ["grout", "tiles"],
+  },
+  {
+    slug: "vinyl-floor-refresh",
+    name: "Vinyl Floor Clean & Polish",
+    categories: ["floor-care"],
+    summary: "Machine cleaning for vinyl and lino, with strip and re-polish for dull floors.",
+    description: "Floors in good condition get a routine machine clean that keeps the existing polish. Dull, yellowed or worn floors are stripped back and given fresh protective coats for a lasting sheen.",
+    includes: ["Sweep and machine scrub", "Rinse and edges detailed", "Old polish stripped where needed", "New protective polish coats"],
+    considerations: ["Stripping and polishing needs the area clear and unused while it dries", "Deep scuffs and tears in the vinyl can't be polished out"],
+    priceIds: ["vinylClean", "vinylStrip"],
+    keywords: ["vinyl", "lino", "floor polish", "strip and seal"],
+  },
 ];
 
 /* ─────────────────────────── Live catalogue ───────────────────────────
@@ -239,6 +262,13 @@ export function setCatalogue(c: Catalogue) {
   CATEGORIES.splice(0, CATEGORIES.length, ...v.categories);
   SERVICES.splice(0, SERVICES.length, ...v.services);
 }
+
+/** Header menus and home-page rows. "Cleaning" is every category except restoration and floor work, which get their own. */
+export const SERVICE_GROUPS = [
+  { label: "Cleaning", title: "Cleaning services", match: (s: Service) => s.categories.some((c) => c !== "restoration" && c !== "floor-care"), all: "/services" },
+  { label: "Restoration", title: "Restoration services", match: (s: Service) => s.categories.includes("restoration"), all: "/services?category=restoration" },
+  { label: "Floor Services", title: "Floor services", match: (s: Service) => s.categories.includes("floor-care"), all: "/services?category=floor-care" },
+];
 
 export const getService = (slug: string) => SERVICES.find((s) => s.slug === slug);
 export const getCategory = (id: CategoryId) => CATEGORIES.find((c) => c.id === id)!;
@@ -278,6 +308,8 @@ const MOTION_BY_SLUG: Record<string, MotionKind> = {
   "water-damage-recovery": "restoration",
   "mould-removal-treatment": "restoration",
   "meth-residue-screening": "restoration",
+  "tile-grout-revive": "tile",
+  "vinyl-floor-refresh": "floor",
 };
 
 export const motionFor = (slug: string): MotionKind | undefined => MOTION_BY_SLUG[slug];

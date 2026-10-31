@@ -1,8 +1,9 @@
 import Link from "next/link";
 import type { CSSProperties } from "react";
-import { ArrowRight, ArrowUpRight } from "lucide-react";
-import { CATEGORIES, getService, SERVICES, servicesIn } from "@/data/services";
-import { formatPrice, getPrice, PRICING_DISCLAIMER, startingPrice, type PriceId } from "@/data/pricing";
+import { ArrowRight } from "lucide-react";
+import { CATEGORIES, getService, SERVICE_GROUPS, SERVICES, type Service } from "@/data/services";
+import { cardSrcSet, FALLBACK_SERVICE_PHOTO, photoUrl, SERVICE_PHOTOS } from "@/data/photos";
+import { formatNZD, formatPrice, getPrice, PRICING_DISCLAIMER, startingPrice, type PriceId } from "@/data/pricing";
 
 /** Stagger helper for `[data-reveal]` items. */
 const rd = (i: number, step = 90) => ({ "--rd": `${i * step}ms` }) as CSSProperties;
@@ -52,30 +53,54 @@ export function CatalogueIndex() {
           </p>
         </div>
 
-        <ul className="mt-20 border-t border-charcoal/10">
-          {CATEGORIES.map((c, i) => {
-            const items = servicesIn(c.id);
-            const from = startingPrice(items.flatMap((s) => s.priceIds));
-            return (
-              <li key={c.id} data-reveal style={rd(i, 70)} className="group/row relative border-b border-charcoal/10">
-                <span className="absolute inset-x-0 bottom-[-1px] h-px origin-left scale-x-0 bg-brass transition-transform duration-700 ease-(--ease-lux) group-hover/row:scale-x-100" aria-hidden />
-                <Link href={`/services?category=${c.id}`} className="group grid grid-cols-[auto_1fr_auto] items-center gap-x-6 gap-y-1 py-7 md:grid-cols-[70px_1.2fr_1.5fr_170px_40px] md:py-10">
-                  <span className="num text-base">0{i + 1}</span>
-                  <span className="font-serif text-2xl font-light text-forest transition-transform duration-700 ease-(--ease-soft) group-hover:translate-x-3 md:text-[2.2rem]">{c.name}</span>
-                  <ArrowUpRight className="size-5 text-forest/40 transition duration-500 group-hover:rotate-45 group-hover:text-brass md:order-last" aria-hidden />
-                  <span className="col-span-3 text-sm text-charcoal/60 md:col-span-1">
-                    {c.blurb} <span className="text-charcoal/40">· {items.length} services</span>
-                  </span>
-                  <span className="col-span-3 text-sm font-semibold tracking-wide text-forest md:col-span-1 md:text-right">
-                    {from ? `${from.basis === "from" ? "" : "From "}${formatPrice(from)}` : "Quoted on assessment"}
-                  </span>
+        {SERVICE_GROUPS.map((g) => {
+          const items = SERVICES.filter(g.match);
+          if (!items.length) return null;
+          return (
+            <div key={g.label} className="mt-16 md:mt-20">
+              <div data-reveal className="flex items-center justify-between gap-4">
+                <h3 className="font-serif text-2xl font-light text-forest md:text-3xl">{g.title}</h3>
+                <Link href={g.all} className="shrink-0 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-forest shadow-(--shadow-lux) transition-colors hover:text-brass">
+                  View all
                 </Link>
-              </li>
-            );
-          })}
-        </ul>
+              </div>
+              <ul className="mt-6 grid grid-cols-2 gap-3 md:gap-5 lg:grid-cols-4">
+                {items.map((s, i) => (
+                  <li key={s.slug} data-reveal style={rd(i, 50)}>
+                    <ServiceCard service={s} />
+                  </li>
+                ))}
+              </ul>
+            </div>
+          );
+        })}
       </div>
     </section>
+  );
+}
+
+function ServiceCard({ service }: { service: Service }) {
+  const photo = SERVICE_PHOTOS[service.slug] ?? FALLBACK_SERVICE_PHOTO;
+  const from = startingPrice(service.priceIds);
+  return (
+    <Link href={`/services/${service.slug}`} className="group relative block aspect-[4/3] overflow-hidden rounded-2xl bg-forest-deep shadow-(--shadow-lux)">
+      {/* eslint-disable-next-line @next/next/no-img-element -- self-hosted images with a responsive srcset */}
+      <img
+        src={photoUrl(photo.id, 640)}
+        srcSet={cardSrcSet(photo.id)}
+        sizes="(min-width: 1024px) 25vw, 50vw"
+        alt=""
+        loading="lazy"
+        decoding="async"
+        className="absolute inset-0 size-full object-cover transition-transform duration-700 ease-(--ease-soft) group-hover:scale-105"
+        style={{ objectPosition: photo.position ?? "50% 50%" }}
+      />
+      <span className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/35 to-black/15" aria-hidden />
+      <span className="absolute inset-0 flex flex-col items-center justify-center p-3 text-center text-white">
+        <span className="text-[0.95rem] font-semibold leading-snug drop-shadow-[0_1px_8px_rgb(0_0_0/0.5)] md:text-lg">{service.name}</span>
+        <span className="mt-1 text-xs font-semibold text-white/85 md:text-sm">{from?.amount != null ? `from ${formatNZD(from.amount)}` : "Quoted on assessment"}</span>
+      </span>
+    </Link>
   );
 }
 

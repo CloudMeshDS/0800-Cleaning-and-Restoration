@@ -5,34 +5,10 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { ArrowRight, ChevronDown, Menu, Phone, X } from "lucide-react";
 import { SITE } from "@/data/site";
-import { SERVICES, type Service } from "@/data/services";
+import { SERVICE_GROUPS, SERVICES, type Service } from "@/data/services";
 import { formatNZD, startingPrice } from "@/data/pricing";
 import { Logo } from "./Logo";
 import { ContactList, waLink, WhatsAppIcon } from "./Contact";
-import { scrollToSection } from "./SmoothScroll";
-
-/** Section links ("/#process") scroll smoothly when that section is on this page. */
-const onSectionClick = (href: string, closeMenu?: () => void) => (e: React.MouseEvent<HTMLAnchorElement>) => {
-  closeMenu?.();
-  if (!href.includes("#") || e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
-  if (!document.getElementById(href.split("#")[1])) return; // not on this page: let the link navigate
-  e.preventDefault();
-  // Let the mobile menu close (and page scrolling resume) before moving.
-  if (closeMenu) window.setTimeout(() => scrollToSection(href), 80);
-  else scrollToSection(href);
-};
-
-const NAV = [
-  { href: "/#home-tour", label: "Home tour" },
-  { href: "/pricing", label: "Pricing" },
-  { href: "/#process", label: "How it works", wide: true }, // desktop menu has room for it from xl up
-];
-
-/** "Cleaning" is every category except restoration work, which gets its own menu. */
-const MENUS = [
-  { label: "Cleaning", match: (s: Service) => s.categories.some((c) => c !== "restoration"), all: "/services" },
-  { label: "Restoration", match: (s: Service) => s.categories.includes("restoration"), all: "/services?category=restoration" },
-];
 
 const fromPrice = (s: Service) => {
   const p = startingPrice(s.priceIds);
@@ -40,7 +16,7 @@ const fromPrice = (s: Service) => {
 };
 
 /** Borderless hover / click dropdown listing services with their starting price. */
-function NavMenu({ label, match, all, overHero }: (typeof MENUS)[number] & { overHero: boolean }) {
+function NavMenu({ label, match, all, overHero }: (typeof SERVICE_GROUPS)[number] & { overHero: boolean }) {
   const [open, setOpen] = useState(false);
   const root = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
@@ -60,7 +36,8 @@ function NavMenu({ label, match, all, overHero }: (typeof MENUS)[number] & { ove
   }, [open]);
 
   if (!items.length) return null;
-  const id = `menu-${label.toLowerCase()}`;
+  const id = `menu-${label.toLowerCase().replace(" ", "-")}`;
+  const wide = items.length > 6; // long lists go in two columns so every service fits on screen
   return (
     <div ref={root} className="relative" onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
       <button
@@ -74,8 +51,8 @@ function NavMenu({ label, match, all, overHero }: (typeof MENUS)[number] & { ove
         <ChevronDown className={`size-3.5 transition-transform duration-300 ${open ? "rotate-180" : ""}`} aria-hidden />
       </button>
       {/* pt-4 bridges the gap so the menu stays open while the pointer moves down */}
-      <div id={id} hidden={!open} className="absolute left-1/2 top-full w-[340px] -translate-x-1/2 pt-4">
-        <ul className="rounded-2xl bg-ivory p-2 shadow-(--shadow-lux)">
+      <div id={id} hidden={!open} className={`absolute top-full pt-4 ${wide ? "left-0 w-[640px]" : "left-1/2 w-[340px] -translate-x-1/2"}`}>
+        <ul data-lenis-prevent className={`max-h-[calc(100svh-6rem)] overflow-y-auto rounded-2xl bg-ivory p-2 shadow-(--shadow-lux) ${wide ? "grid grid-cols-2" : ""}`}>
           {items.map((s) => (
             <li key={s.slug}>
               <Link href={`/services/${s.slug}`} className="flex items-baseline justify-between gap-4 rounded-xl px-4 py-2.5 text-sm text-forest transition-colors hover:bg-stone">
@@ -84,7 +61,7 @@ function NavMenu({ label, match, all, overHero }: (typeof MENUS)[number] & { ove
               </Link>
             </li>
           ))}
-          <li>
+          <li className={wide ? "col-span-2" : ""}>
             <Link href={all} className="mt-1 flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-semibold uppercase tracking-[0.18em] text-brass hover:bg-stone">
               View all {label.toLowerCase()} <ArrowRight className="size-3.5" aria-hidden />
             </Link>
@@ -128,13 +105,8 @@ export function SiteHeader() {
         </Link>
 
         <nav aria-label="Primary" className="hidden items-center gap-5 lg:flex xl:gap-8">
-          {MENUS.map((m) => (
+          {SERVICE_GROUPS.map((m) => (
             <NavMenu key={m.label} {...m} overHero={overHero} />
-          ))}
-          {NAV.map((n) => (
-            <Link key={n.href} href={n.href} onClick={onSectionClick(n.href)} className={`link-line whitespace-nowrap ${n.wide ? "hidden xl:inline" : ""} text-[0.72rem] font-semibold uppercase tracking-[0.2em] transition-colors duration-500 ${overHero ? "text-white/85 hover:text-white" : "text-charcoal/75 hover:text-forest"}`}>
-              {n.label}
-            </Link>
           ))}
         </nav>
 
@@ -165,7 +137,7 @@ export function SiteHeader() {
       {open && (
         <div id="mobile-nav" className="fixed inset-0 top-[72px] z-40 flex flex-col bg-ivory px-6 pb-10 pt-6 lg:hidden">
           <nav aria-label="Mobile" className="flex flex-col overflow-y-auto">
-            {MENUS.map((m) => {
+            {SERVICE_GROUPS.map((m) => {
               const items = SERVICES.filter(m.match);
               return items.length ? (
                 <details key={m.label} className="group border-b border-charcoal/10">
@@ -186,11 +158,6 @@ export function SiteHeader() {
                 </details>
               ) : null;
             })}
-            {NAV.map((n) => (
-              <Link key={n.href} href={n.href} onClick={onSectionClick(n.href, () => setOpen(false))} className="border-b border-charcoal/10 py-5 font-serif text-3xl text-forest">
-                {n.label}
-              </Link>
-            ))}
           </nav>
           <div className="mt-auto flex flex-col gap-3">
             <Link href="/quote" className="btn-primary w-full" onClick={() => setOpen(false)}>
