@@ -5,6 +5,8 @@ import { useMemo, useState } from "react";
 import { ArrowUpRight, Search, X } from "lucide-react";
 import { SERVICE_GROUPS, SERVICES, type GroupId } from "@/data/services";
 import { formatPrice, startingPrice } from "@/data/pricing";
+import { FALLBACK_SERVICE_PHOTO, SERVICE_PHOTOS } from "@/data/photos";
+import { SplitPhoto } from "./photo/SplitPhoto";
 
 /** Tabs match the header menus (see SERVICE_GROUPS); a service can be in more than one. */
 export function CatalogueBrowser({ initialTab }: { initialTab: GroupId | "all" }) {
@@ -62,18 +64,21 @@ export function CatalogueBrowser({ initialTab }: { initialTab: GroupId | "all" }
       </p>
 
       {results.length ? (
-        <ul className="mt-4 grid border-t border-charcoal/10 md:grid-cols-2">
+        <ul className="mt-6 grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
           {results.map((s) => {
             const from = startingPrice(s.priceIds);
             return (
-              <li key={s.slug} className="border-b border-charcoal/10 md:odd:border-r md:odd:pr-8 md:even:pl-8">
-                <Link href={`/services/${s.slug}`} className="group flex h-full items-start justify-between gap-6 py-7">
-                  <span>
-                    <span className="block font-serif text-2xl text-forest">{s.name}</span>
-                    <span className="mt-2 block text-[0.95rem] leading-relaxed text-charcoal/65">{s.summary}</span>
-                    <span className="mt-3 block text-sm font-semibold text-forest">{from ? formatPrice(from) : "Quote required"}</span>
+              <li key={s.slug}>
+                <Link href={`/services/${s.slug}`} className="group flex h-full flex-col">
+                  <span className="relative block aspect-[4/3] overflow-hidden rounded-2xl bg-forest-deep shadow-(--shadow-lux)">
+                    <SplitPhoto photo={SERVICE_PHOTOS[s.slug] ?? FALLBACK_SERVICE_PHOTO} />
                   </span>
-                  <ArrowUpRight className="mt-1 size-5 shrink-0 text-forest/40 transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-forest" aria-hidden />
+                  <span className="mt-5 flex items-start justify-between gap-4">
+                    <span className="font-serif text-2xl text-forest">{s.name}</span>
+                    <ArrowUpRight className="mt-1 size-5 shrink-0 text-forest/40 transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-forest" aria-hidden />
+                  </span>
+                  <span className="mt-2 block text-[0.95rem] leading-relaxed text-charcoal/65">{s.summary}</span>
+                  <span className="mt-3 block text-sm font-semibold text-forest">{from ? formatPrice(from) : "Quote required"}</span>
                 </Link>
               </li>
             );
