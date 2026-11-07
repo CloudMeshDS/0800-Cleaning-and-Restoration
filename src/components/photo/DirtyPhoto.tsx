@@ -17,7 +17,7 @@ import { pos, Wipe, wipe } from "../stories/motion";
 
 export type Grime = "algae" | "haze" | "dust" | "scuff" | "grease" | "grout" | "faded";
 
-export const FILTER: Record<Grime, string> = {
+const FILTER: Record<Grime, string> = {
   algae: "saturate(0.55) brightness(0.8) contrast(0.92) sepia(0.2) hue-rotate(-8deg)",
   haze: "saturate(0.6) brightness(0.9) contrast(0.78) blur(1.2px)",
   dust: "saturate(0.55) brightness(0.84) contrast(0.9) sepia(0.28)",
@@ -27,7 +27,7 @@ export const FILTER: Record<Grime, string> = {
   faded: "grayscale(0.85) sepia(0.45) brightness(1.08) contrast(0.85)",
 };
 
-export const OVERLAY: Record<Grime, CSSProperties> = {
+const OVERLAY: Record<Grime, CSSProperties> = {
   algae: {
     backgroundColor: "rgb(54 70 38 / 0.32)",
     backgroundImage: `linear-gradient(180deg, rgb(40 55 28 / 0.35), transparent 35%, transparent 60%, rgb(45 52 30 / 0.5)), ${noise({ freq: 0.012, octaves: 4, alpha: 0.55, rgb: "45 60 30", size: 700, seed: 71 })}, ${noise({ freq: 0.9, alpha: 0.3, rgb: "40 45 30", seed: 72 })}`,
