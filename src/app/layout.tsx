@@ -6,7 +6,6 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { SITE } from "@/data/site";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import { Reveals } from "@/components/Reveals";
-import { Cursor } from "@/components/Cursor";
 import { Logo } from "@/components/Logo";
 import { FloatingContact } from "@/components/Contact";
 import { LiveSync } from "@/components/LiveSync";
@@ -71,7 +70,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <SiteFooter />
         <SmoothScroll />
         <Reveals />
-        <Cursor />
         <FloatingContact />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(orgJsonLd) }} />
       </body>

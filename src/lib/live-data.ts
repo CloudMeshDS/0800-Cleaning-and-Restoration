@@ -1,6 +1,6 @@
 import { revalidatePath, revalidateTag, unstable_cache } from "next/cache";
 import { mergePrices, setPriceTable, type PriceItem, type PriceOverride, type PriceTable } from "@/data/pricing";
-import { DEFAULT_CATALOGUE, setCatalogue, visibleCatalogue, type Catalogue } from "@/data/services";
+import { DEFAULT_CATALOGUE, DEFAULT_SERVICES, setCatalogue, visibleCatalogue, type Catalogue } from "@/data/services";
 
 /**
  * Live site data edited in /admin, stored in Supabase (table `site_settings`,
@@ -25,6 +25,25 @@ export type Overrides = Partial<Record<string, PriceOverride>>;
 export interface StoredCatalogue extends Catalogue {
   /** Price lines created for added services. */
   prices: Record<string, PriceItem>;
+  /** Built-in services that existed at the last save; any newer ones are added (see withNewDefaults). */
+  seenDefaults?: string[];
+}
+
+/** Built-in services before seenDefaults was recorded. */
+const FIRST_DEFAULTS = ["carpet-deep-refresh", "curtain-care", "blind-care", "sofa-upholstery-refresh", "home-refresh", "move-out-detail", "office-care-programme", "post-build-detail", "glass-care", "oven-revive", "water-damage-recovery", "mould-removal-treatment", "meth-residue-screening", "tile-grout-revive", "vinyl-floor-refresh"];
+
+/**
+ * Built-in services added to the code after the catalogue was last saved in
+ * /admin appear on the site (and in /admin) without anyone re-adding them.
+ * Saving records them as seen, so deleting one in /admin keeps it deleted.
+ */
+export const DEFAULT_SLUGS = DEFAULT_SERVICES.map((s) => s.slug);
+
+function withNewDefaults(c: StoredCatalogue): StoredCatalogue {
+  const seen = new Set(c.seenDefaults ?? FIRST_DEFAULTS);
+  const have = new Set(c.services.map((s) => s.slug));
+  const added = DEFAULT_SERVICES.filter((s) => !seen.has(s.slug) && !have.has(s.slug));
+  return added.length ? { ...c, services: [...c.services, ...added] } : c;
 }
 
 export const storageConnected = () => Boolean(process.env.SUPABASE_SECRET_KEY);
@@ -44,7 +63,7 @@ const readAll = unstable_cache(
     try {
       const [overrides, catalogue] = await Promise.all([readRow<Overrides>("pricing_overrides"), readRow<StoredCatalogue>("catalogue")]);
       const valid = catalogue && Array.isArray(catalogue.categories) && Array.isArray(catalogue.services) && catalogue.categories.length > 0;
-      return { overrides: overrides ?? {}, catalogue: valid ? { ...catalogue, prices: catalogue.prices ?? {} } : null };
+      return { overrides: overrides ?? {}, catalogue: valid ? withNewDefaults({ ...catalogue, prices: catalogue.prices ?? {} }) : null };
     } catch (e) {
       console.error("[site-data] could not read from Supabase, using defaults", e);
       return { overrides: {}, catalogue: null };

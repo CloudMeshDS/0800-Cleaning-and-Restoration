@@ -6,7 +6,7 @@ import type { Category, Service } from "@/data/services";
 import { headers } from "next/headers";
 import { clientIp } from "@/lib/rate-limit";
 import { checkPassword, clearLoginFailures, endSession, isAdmin, loginLocked, recordLoginFailure, startSession } from "@/lib/admin-auth";
-import { saveAll, type Overrides, type StoredCatalogue } from "@/lib/live-data";
+import { DEFAULT_SLUGS, saveAll, type Overrides, type StoredCatalogue } from "@/lib/live-data";
 
 export type LoginState = { error?: string };
 
@@ -130,7 +130,7 @@ export async function saveSite({ catalogue, edits }: SavePayload): Promise<SaveR
       if (Object.keys(diff).length) overrides[id] = diff;
     }
 
-    await saveAll(overrides, { categories, services, prices });
+    await saveAll(overrides, { categories, services, prices, seenDefaults: DEFAULT_SLUGS });
     const hidden = services.filter((s) => s.hidden).length;
     return { ok: true, message: `Saved: ${services.length - hidden} services live${hidden ? `, ${hidden} hidden` : ""}, ${categories.length} categories. The website updates within a few seconds.` };
   } catch (e) {

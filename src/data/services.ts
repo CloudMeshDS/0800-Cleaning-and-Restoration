@@ -138,6 +138,39 @@ export const DEFAULT_SERVICES: Service[] = [
     keywords: ["office cleaner", "commercial cleaning"],
   },
   {
+    slug: "construction-cleaning",
+    name: "Construction Cleaning",
+    categories: ["commercial"],
+    summary: "Dust, debris and residue cleared from building sites, fit-outs and renovations during and after the build.",
+    description: "Staged cleans through a project and a thorough clean at handover: builders' dust removed from every surface, debris cleared, and floors, glass and fixtures left ready for the client.",
+    includes: ["Debris and offcut removal", "Dust removed from walls, ledges and fittings", "Glass, frames and tracks cleaned", "Floors vacuumed and washed"],
+    considerations: ["Quoted after a site visit, based on size and stage of the build", "Rubbish removal beyond normal bags is arranged separately"],
+    priceIds: [],
+    keywords: ["construction cleaning", "builders clean", "site clean"],
+  },
+  {
+    slug: "medical-cleaning",
+    name: "Medical Cleaning",
+    categories: ["commercial"],
+    summary: "Careful cleaning for clinics, dental practices and medical rooms, with attention to touchpoints and hygiene.",
+    description: "Scheduled or one-off cleaning for healthcare spaces. We follow your practice's infection-control requirements, using colour-coded equipment and hospital-grade products on high-touch surfaces.",
+    includes: ["Reception and waiting areas", "Consult and treatment rooms", "High-touch surfaces disinfected", "Bathrooms and staff kitchens", "Hard floors washed"],
+    considerations: ["Scope agreed with your practice manager", "Clinical and hazardous waste stays with your licensed provider"],
+    priceIds: [],
+    keywords: ["medical cleaning", "clinic cleaning", "dental cleaning"],
+  },
+  {
+    slug: "office-cleaning",
+    name: "Office Cleaning",
+    categories: ["commercial"],
+    summary: "Desks, kitchens, bathrooms and floors kept clean so your office is ready for work every day.",
+    description: "One-off or regular office cleans, before or after hours, with a checklist agreed for your space so nothing is missed.",
+    includes: ["Desks and touchpoints wiped", "Kitchens and bathrooms cleaned", "Bins emptied", "Floors vacuumed and mopped"],
+    considerations: ["Quoted after a walkthrough of your office", "After-hours access arranged with you"],
+    priceIds: [],
+    keywords: ["office cleaning", "office cleaner"],
+  },
+  {
     slug: "post-build-detail",
     name: "Post-Build Detail",
     categories: ["residential", "commercial"],
@@ -263,11 +296,31 @@ export function setCatalogue(c: Catalogue) {
   SERVICES.splice(0, SERVICES.length, ...v.services);
 }
 
-/** Header menus and home-page rows. "Cleaning" is every category except restoration and floor work, which get their own. */
+/** Commercial menu, in this order; services added in /admin under "commercial" follow. */
+const COMMERCIAL = ["construction-cleaning", "medical-cleaning", "office-cleaning", "move-out-detail", "post-build-detail", "carpet-deep-refresh", "office-care-programme", "vinyl-floor-refresh"];
+const OWN_MENU = ["restoration", "floor-care", "commercial"];
+
+/** Header menus and home-page rows. A service can sit in more than one. */
 export const SERVICE_GROUPS = [
-  { label: "Cleaning", title: "Cleaning services", match: (s: Service) => s.categories.some((c) => c !== "restoration" && c !== "floor-care"), all: "/services" },
-  { label: "Restoration", title: "Restoration services", match: (s: Service) => s.categories.includes("restoration"), all: "/services?category=restoration" },
-  { label: "Floor Services", title: "Floor services", match: (s: Service) => s.categories.includes("floor-care"), all: "/services?category=floor-care" },
+  {
+    label: "Residential Cleaning",
+    short: "Residential",
+    title: "Residential cleaning",
+    list: (all: Service[]) => all.filter((s) => s.categories.some((c) => !OWN_MENU.includes(c))),
+    all: "/services",
+  },
+  {
+    label: "Commercial Cleaning",
+    short: "Commercial",
+    title: "Commercial cleaning",
+    list: (all: Service[]) => [
+      ...COMMERCIAL.flatMap((slug) => all.filter((s) => s.slug === slug)),
+      ...all.filter((s) => !COMMERCIAL.includes(s.slug) && s.categories.includes("commercial")),
+    ],
+    all: "/services?category=commercial",
+  },
+  { label: "Restoration", short: "Restoration", title: "Restoration services", list: (all: Service[]) => all.filter((s) => s.categories.includes("restoration")), all: "/services?category=restoration" },
+  { label: "Floor Services", short: "Floors", title: "Floor services", list: (all: Service[]) => all.filter((s) => s.categories.includes("floor-care")), all: "/services?category=floor-care" },
 ];
 
 export const getService = (slug: string) => SERVICES.find((s) => s.slug === slug);

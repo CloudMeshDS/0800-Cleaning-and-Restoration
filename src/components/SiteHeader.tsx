@@ -16,11 +16,11 @@ const fromPrice = (s: Service) => {
 };
 
 /** Borderless hover / click dropdown listing services with their starting price. */
-function NavMenu({ label, match, all, overHero }: (typeof SERVICE_GROUPS)[number] & { overHero: boolean }) {
+function NavMenu({ label, short, list, all, overHero }: (typeof SERVICE_GROUPS)[number] & { overHero: boolean }) {
   const [open, setOpen] = useState(false);
   const root = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
-  const items = SERVICES.filter(match);
+  const items = list(SERVICES);
 
   useEffect(() => setOpen(false), [pathname]);
   useEffect(() => {
@@ -36,7 +36,7 @@ function NavMenu({ label, match, all, overHero }: (typeof SERVICE_GROUPS)[number
   }, [open]);
 
   if (!items.length) return null;
-  const id = `menu-${label.toLowerCase().replace(" ", "-")}`;
+  const id = `menu-${label.toLowerCase().replaceAll(" ", "-")}`;
   const wide = items.length > 6; // long lists go in two columns so every service fits on screen
   return (
     <div ref={root} className="relative" onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
@@ -47,7 +47,8 @@ function NavMenu({ label, match, all, overHero }: (typeof SERVICE_GROUPS)[number
         onClick={() => setOpen((v) => !v)}
         className={`flex items-center gap-1 whitespace-nowrap text-[0.72rem] font-semibold uppercase tracking-[0.2em] transition-colors duration-500 ${overHero ? "text-white/85 hover:text-white" : "text-charcoal/75 hover:text-forest"}`}
       >
-        {label}
+        <span className="xl:hidden">{short}</span>
+        <span className="hidden xl:inline">{label}</span>
         <ChevronDown className={`size-3.5 transition-transform duration-300 ${open ? "rotate-180" : ""}`} aria-hidden />
       </button>
       {/* pt-4 bridges the gap so the menu stays open while the pointer moves down */}
@@ -104,7 +105,7 @@ export function SiteHeader() {
           <Logo />
         </Link>
 
-        <nav aria-label="Primary" className="hidden items-center gap-5 lg:flex xl:gap-8">
+        <nav aria-label="Primary" className="hidden items-center gap-4 lg:flex xl:gap-7">
           {SERVICE_GROUPS.map((m) => (
             <NavMenu key={m.label} {...m} overHero={overHero} />
           ))}
@@ -112,7 +113,7 @@ export function SiteHeader() {
 
         <div className="hidden items-center gap-5 lg:flex">
           <a href={SITE.phoneHref} aria-label={`Call ${SITE.phone}`} className={`flex items-center gap-2 text-[0.8rem] font-semibold tracking-wide transition-colors duration-500 ${overHero ? "text-white" : "text-forest"}`}>
-            <Phone className="size-4" aria-hidden /> <span className="hidden whitespace-nowrap xl:inline">{SITE.phone}</span>
+            <Phone className="size-4" aria-hidden /> <span className="hidden whitespace-nowrap 2xl:inline">{SITE.phone}</span>
           </a>
           <a href={waLink(SITE.whatsappHref)} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp us" className={`grid size-9 place-items-center rounded-full border transition-colors hover:border-brass hover:text-brass ${overHero ? "border-white/40 text-white" : "border-forest/20 text-forest"}`}>
             <WhatsAppIcon className="size-4" />
@@ -135,10 +136,10 @@ export function SiteHeader() {
       </div>
 
       {open && (
-        <div id="mobile-nav" className="fixed inset-0 top-[72px] z-40 flex flex-col bg-ivory px-6 pb-10 pt-6 lg:hidden">
-          <nav aria-label="Mobile" className="flex flex-col overflow-y-auto">
+        <div id="mobile-nav" data-lenis-prevent className="fixed inset-0 top-[72px] z-40 flex flex-col overflow-y-auto overscroll-contain bg-ivory px-6 pb-10 pt-6 lg:hidden">
+          <nav aria-label="Mobile" className="flex shrink-0 flex-col">
             {SERVICE_GROUPS.map((m) => {
-              const items = SERVICES.filter(m.match);
+              const items = m.list(SERVICES);
               return items.length ? (
                 <details key={m.label} className="group border-b border-charcoal/10">
                   <summary className="flex cursor-pointer list-none items-center justify-between py-5 font-serif text-3xl text-forest [&::-webkit-details-marker]:hidden">
@@ -154,12 +155,17 @@ export function SiteHeader() {
                         </Link>
                       </li>
                     ))}
+                    <li>
+                      <Link href={m.all} onClick={() => setOpen(false)} className="mt-2 flex items-center gap-2 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-brass">
+                        View all {m.label.toLowerCase()} <ArrowRight className="size-3.5" aria-hidden />
+                      </Link>
+                    </li>
                   </ul>
                 </details>
               ) : null;
             })}
           </nav>
-          <div className="mt-auto flex flex-col gap-3">
+          <div className="mt-auto flex shrink-0 flex-col gap-3 pt-8">
             <Link href="/quote" className="btn-primary w-full" onClick={() => setOpen(false)}>
               Get a Free Quote
             </Link>

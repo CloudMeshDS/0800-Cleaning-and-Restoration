@@ -2,7 +2,8 @@ import Link from "next/link";
 import type { CSSProperties } from "react";
 import { ArrowRight } from "lucide-react";
 import { CATEGORIES, getService, SERVICE_GROUPS, SERVICES, type Service } from "@/data/services";
-import { cardSrcSet, FALLBACK_SERVICE_PHOTO, photoUrl, SERVICE_PHOTOS } from "@/data/photos";
+import { FALLBACK_SERVICE_PHOTO, SERVICE_PHOTOS } from "@/data/photos";
+import { SplitPhoto } from "../photo/SplitPhoto";
 import { formatNZD, formatPrice, getPrice, PRICING_DISCLAIMER, startingPrice, type PriceId } from "@/data/pricing";
 
 /** Stagger helper for `[data-reveal]` items. */
@@ -54,7 +55,7 @@ export function CatalogueIndex() {
         </div>
 
         {SERVICE_GROUPS.map((g) => {
-          const items = SERVICES.filter(g.match);
+          const items = g.list(SERVICES);
           if (!items.length) return null;
           return (
             <div key={g.label} className="mt-16 md:mt-20">
@@ -84,18 +85,8 @@ function ServiceCard({ service }: { service: Service }) {
   const from = startingPrice(service.priceIds);
   return (
     <Link href={`/services/${service.slug}`} className="group relative block aspect-[4/3] overflow-hidden rounded-2xl bg-forest-deep shadow-(--shadow-lux)">
-      {/* eslint-disable-next-line @next/next/no-img-element -- self-hosted images with a responsive srcset */}
-      <img
-        src={photoUrl(photo.id, 640)}
-        srcSet={cardSrcSet(photo.id)}
-        sizes="(min-width: 1024px) 25vw, 50vw"
-        alt=""
-        loading="lazy"
-        decoding="async"
-        className="absolute inset-0 size-full object-cover transition-transform duration-700 ease-(--ease-soft) group-hover:scale-105"
-        style={{ objectPosition: photo.position ?? "50% 50%" }}
-      />
-      <span className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/35 to-black/15" aria-hidden />
+      <SplitPhoto photo={photo} />
+      <span className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/5" aria-hidden />
       <span className="absolute inset-0 flex flex-col items-center justify-center p-3 text-center text-white">
         <span className="text-[0.95rem] font-semibold leading-snug drop-shadow-[0_1px_8px_rgb(0_0_0/0.5)] md:text-lg">{service.name}</span>
         <span className="mt-1 text-xs font-semibold text-white/85 md:text-sm">{from?.amount != null ? `from ${formatNZD(from.amount)}` : "Quoted on assessment"}</span>
