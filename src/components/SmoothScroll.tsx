@@ -23,7 +23,7 @@ export function SmoothScroll() {
 
   useEffect(() => {
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const lenis = new Lenis({ lerp: 0.07, wheelMultiplier: 0.6, anchors: { offset: -72 }, autoRaf: false });
+    const lenis = new Lenis({ lerp: 0.1, wheelMultiplier: 0.9, anchors: { offset: -72 }, autoRaf: false });
     window.__lenis = lenis;
     lenis.on("scroll", ScrollTrigger.update);
     const tick = (time: number) => lenis.raf(time * 1000);
@@ -85,7 +85,7 @@ export function scrollToSection(hash: string): boolean {
   const el = document.getElementById(hash.replace(/^.*#/, ""));
   if (!el) return false;
   const lenis = window.__lenis;
-  if (lenis) lenis.scrollTo(el, { offset: -72, force: true, duration: 1.4 });
+  if (lenis) lenis.scrollTo(el, { offset: -72, force: true, duration: 1.1 });
   else el.scrollIntoView({ behavior: "smooth" });
   history.replaceState(null, "", hash.startsWith("/") ? hash : `/${hash}`);
   return true;
