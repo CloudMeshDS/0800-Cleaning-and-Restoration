@@ -3,23 +3,25 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { ArrowUpRight, Search, X } from "lucide-react";
-import { CATEGORIES, SERVICES, type CategoryId } from "@/data/services";
+import { SERVICE_GROUPS, SERVICES, type GroupId } from "@/data/services";
 import { formatPrice, startingPrice } from "@/data/pricing";
 
-export function CatalogueBrowser({ initialCategory }: { initialCategory: CategoryId | "all" }) {
-  const [category, setCategory] = useState<CategoryId | "all">(initialCategory);
+/** Tabs match the header menus (see SERVICE_GROUPS); a service can be in more than one. */
+export function CatalogueBrowser({ initialTab }: { initialTab: GroupId | "all" }) {
+  const [tab, setTab] = useState<GroupId | "all">(initialTab);
   const [query, setQuery] = useState("");
 
-  const select = (c: CategoryId | "all") => {
-    setCategory(c);
-    const url = c === "all" ? "/services" : `/services?category=${c}`;
+  const select = (t: GroupId | "all") => {
+    setTab(t);
+    const url = t === "all" ? "/services" : `/services?tab=${t}`;
     window.history.replaceState(null, "", url);
   };
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return SERVICES.filter((s) => (category === "all" || s.categories.includes(category)) && (!q || [s.name, s.summary, ...s.keywords].join(" ").toLowerCase().includes(q)));
-  }, [category, query]);
+    const group = SERVICE_GROUPS.find((g) => g.id === tab);
+    return (group ? group.list(SERVICES) : SERVICES).filter((s) => !q || [s.name, s.summary, ...s.keywords].join(" ").toLowerCase().includes(q));
+  }, [tab, query]);
 
   return (
     <div>
@@ -37,18 +39,18 @@ export function CatalogueBrowser({ initialCategory }: { initialCategory: Categor
               </button>
             )}
           </div>
-          <div role="tablist" aria-label="Filter by category" className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 [scrollbar-width:none]">
-            {[{ id: "all" as const, name: "All services" }, ...CATEGORIES].map((c) => (
+          <div role="tablist" aria-label="Filter services" className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 [scrollbar-width:none]">
+            {[{ id: "all" as const, label: "All services" }, ...SERVICE_GROUPS].map((c) => (
               <button
                 key={c.id}
                 role="tab"
-                aria-selected={category === c.id}
+                aria-selected={tab === c.id}
                 onClick={() => select(c.id)}
                 className={`shrink-0 rounded-full border px-4 py-2 text-sm font-medium transition ${
-                  category === c.id ? "border-forest bg-forest text-ivory" : "border-charcoal/15 text-charcoal/70 hover:border-forest/50"
+                  tab === c.id ? "border-forest bg-forest text-ivory" : "border-charcoal/15 text-charcoal/70 hover:border-forest/50"
                 }`}
               >
-                {c.name}
+                {c.label}
               </button>
             ))}
           </div>

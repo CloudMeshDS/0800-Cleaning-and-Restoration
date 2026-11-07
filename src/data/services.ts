@@ -303,13 +303,15 @@ const OWN_MENU = ["restoration", "floor-care", "commercial"];
 /** Header menus and home-page rows. A service can sit in more than one. */
 export const SERVICE_GROUPS = [
   {
+    id: "residential",
     label: "Residential Cleaning",
     short: "Residential",
     title: "Residential cleaning",
     list: (all: Service[]) => all.filter((s) => s.categories.some((c) => !OWN_MENU.includes(c))),
-    all: "/services",
+    all: "/services?tab=residential",
   },
   {
+    id: "commercial",
     label: "Commercial Cleaning",
     short: "Commercial",
     title: "Commercial cleaning",
@@ -317,11 +319,17 @@ export const SERVICE_GROUPS = [
       ...COMMERCIAL.flatMap((slug) => all.filter((s) => s.slug === slug)),
       ...all.filter((s) => !COMMERCIAL.includes(s.slug) && s.categories.includes("commercial")),
     ],
-    all: "/services?category=commercial",
+    all: "/services?tab=commercial",
   },
-  { label: "Restoration", short: "Restoration", title: "Restoration services", list: (all: Service[]) => all.filter((s) => s.categories.includes("restoration")), all: "/services?category=restoration" },
-  { label: "Floor Services", short: "Floors", title: "Floor services", list: (all: Service[]) => all.filter((s) => s.categories.includes("floor-care")), all: "/services?category=floor-care" },
+  { id: "restoration", label: "Restoration", short: "Restoration", title: "Restoration services", list: (all: Service[]) => all.filter((s) => s.categories.includes("restoration")), all: "/services?tab=restoration" },
+  { id: "floors", label: "Floor Services", short: "Floors", title: "Floor services", list: (all: Service[]) => all.filter((s) => s.categories.includes("floor-care")), all: "/services?tab=floors" },
 ];
+
+export type GroupId = (typeof SERVICE_GROUPS)[number]["id"];
+
+/** The tab a category belongs to, so older ?category= links still land somewhere sensible. */
+export const groupForCategory = (c: CategoryId): GroupId =>
+  c === "restoration" ? "restoration" : c === "floor-care" ? "floors" : c === "commercial" ? "commercial" : "residential";
 
 export const getService = (slug: string) => SERVICES.find((s) => s.slug === slug);
 export const getCategory = (id: CategoryId) => CATEGORIES.find((c) => c.id === id)!;

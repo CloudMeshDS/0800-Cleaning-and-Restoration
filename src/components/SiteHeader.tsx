@@ -40,17 +40,16 @@ function NavMenu({ label, short, list, all, overHero }: (typeof SERVICE_GROUPS)[
   const wide = items.length > 6; // long lists go in two columns so every service fits on screen
   return (
     <div ref={root} className="relative" onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
-      <button
-        type="button"
-        aria-expanded={open}
-        aria-controls={id}
-        onClick={() => setOpen((v) => !v)}
-        className={`flex items-center gap-1 whitespace-nowrap text-[0.72rem] font-semibold uppercase tracking-[0.2em] transition-colors duration-500 ${overHero ? "text-white/85 hover:text-white" : "text-charcoal/75 hover:text-forest"}`}
-      >
-        <span className="xl:hidden">{short}</span>
-        <span className="hidden xl:inline">{label}</span>
-        <ChevronDown className={`size-3.5 transition-transform duration-300 ${open ? "rotate-180" : ""}`} aria-hidden />
-      </button>
+      {/* The label opens this tab on the Services page; the chevron opens the menu without leaving. */}
+      <div className={`flex items-center gap-1 whitespace-nowrap text-[0.72rem] font-semibold uppercase tracking-[0.2em] transition-colors duration-500 ${overHero ? "text-white/85" : "text-charcoal/75"}`}>
+        <Link href={all} className={overHero ? "hover:text-white" : "hover:text-forest"}>
+          <span className="xl:hidden">{short}</span>
+          <span className="hidden xl:inline">{label}</span>
+        </Link>
+        <button type="button" aria-expanded={open} aria-controls={id} aria-label={`Show ${label} services`} onClick={() => setOpen((v) => !v)} className={`-m-1 p-1 ${overHero ? "hover:text-white" : "hover:text-forest"}`}>
+          <ChevronDown className={`size-3.5 transition-transform duration-300 ${open ? "rotate-180" : ""}`} aria-hidden />
+        </button>
+      </div>
       {/* pt-4 bridges the gap so the menu stays open while the pointer moves down */}
       <div id={id} hidden={!open} className={`absolute top-full pt-4 ${wide ? "left-0 w-[640px]" : "left-1/2 w-[340px] -translate-x-1/2"}`}>
         <ul data-lenis-prevent className={`max-h-[calc(100svh-6rem)] overflow-y-auto rounded-2xl bg-ivory p-2 shadow-(--shadow-lux) ${wide ? "grid grid-cols-2" : ""}`}>
