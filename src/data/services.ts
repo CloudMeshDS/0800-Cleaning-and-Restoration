@@ -328,8 +328,15 @@ export const SERVICE_GROUPS = [
 export type GroupId = (typeof SERVICE_GROUPS)[number]["id"];
 
 /** The tab a category belongs to, so older ?category= links still land somewhere sensible. */
-export const groupForCategory = (c: CategoryId): GroupId =>
+const groupForCategory = (c: CategoryId): GroupId =>
   c === "restoration" ? "restoration" : c === "floor-care" ? "floors" : c === "commercial" ? "commercial" : "residential";
+
+/** The Services page tab for ?tab= (or an older ?category=) in the address. */
+export function tabFromParams(tab: string | null | undefined, category: string | null | undefined): GroupId | "all" {
+  if (SERVICE_GROUPS.some((g) => g.id === tab)) return tab as GroupId;
+  if (category && CATEGORIES.some((c) => c.id === category)) return groupForCategory(category);
+  return "all";
+}
 
 export const getService = (slug: string) => SERVICES.find((s) => s.slug === slug);
 export const getCategory = (id: CategoryId) => CATEGORIES.find((c) => c.id === id)!;

@@ -2,22 +2,25 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { ArrowUpRight, Search, X } from "lucide-react";
-import { SERVICE_GROUPS, SERVICES, type GroupId } from "@/data/services";
+import { SERVICE_GROUPS, SERVICES, tabFromParams, type GroupId } from "@/data/services";
 import { formatPrice, startingPrice } from "@/data/pricing";
 import { FALLBACK_SERVICE_PHOTO, SERVICE_PHOTOS } from "@/data/photos";
 import { SplitPhoto } from "./photo/SplitPhoto";
 
-/** Tabs match the header menus (see SERVICE_GROUPS); a service can be in more than one. */
-export function CatalogueBrowser({ initialTab }: { initialTab: GroupId | "all" }) {
-  const [tab, setTab] = useState<GroupId | "all">(initialTab);
+/**
+ * Tabs match the header menus (see SERVICE_GROUPS); a service can be in more
+ * than one. The selected tab always follows the address, so header links,
+ * these buttons and Back all agree.
+ */
+export function CatalogueBrowser() {
+  const params = useSearchParams();
+  const tab = tabFromParams(params.get("tab"), params.get("category"));
   const [query, setQuery] = useState("");
 
-  const select = (t: GroupId | "all") => {
-    setTab(t);
-    const url = t === "all" ? "/services" : `/services?tab=${t}`;
-    window.history.replaceState(null, "", url);
-  };
+  // Next.js keeps useSearchParams in step with history.replaceState.
+  const select = (t: GroupId | "all") => window.history.replaceState(null, "", t === "all" ? "/services" : `/services?tab=${t}`);
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();

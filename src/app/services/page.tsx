@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { CatalogueBrowser } from "@/components/CatalogueBrowser";
-import { CATEGORIES, groupForCategory, SERVICE_GROUPS, type GroupId } from "@/data/services";
 import { syncLive } from "@/lib/live-data";
 import { PRICING_DISCLAIMER } from "@/data/pricing";
 
@@ -12,12 +11,7 @@ export const metadata: Metadata = {
 
 export default async function ServicesPage({ searchParams }: { searchParams: Promise<{ tab?: string; category?: string }> }) {
   await syncLive();
-  const { tab, category } = await searchParams;
-  const initial: GroupId | "all" = SERVICE_GROUPS.some((g) => g.id === tab)
-    ? (tab as GroupId)
-    : category && CATEGORIES.some((c) => c.id === category)
-      ? groupForCategory(category)
-      : "all";
+  await searchParams; // the tab is read from the address in CatalogueBrowser; this keeps the page rendered per request
 
   return (
     <div className="container-x pb-28 pt-36 md:pt-44">
@@ -25,7 +19,7 @@ export default async function ServicesPage({ searchParams }: { searchParams: Pro
       <h1 className="display mt-4 max-w-3xl text-[clamp(2.6rem,6vw,5rem)] text-forest">Everything your property needs, explained clearly.</h1>
       <p className="mt-6 max-w-2xl text-charcoal/65">{PRICING_DISCLAIMER} Service availability varies by region and is confirmed when you enquire.</p>
       <div className="mt-14">
-        <CatalogueBrowser key={initial} initialTab={initial} />
+        <CatalogueBrowser />
       </div>
     </div>
   );
