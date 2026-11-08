@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { ArrowUpRight, Search, X } from "lucide-react";
-import { SERVICE_GROUPS, SERVICES, tabFromParams, type GroupId } from "@/data/services";
+import { ALL_SERVICES_INTRO, SERVICE_GROUPS, SERVICES, tabFromParams, type GroupId } from "@/data/services";
 import { formatPrice, startingPrice } from "@/data/pricing";
 import { FALLBACK_SERVICE_PHOTO, SERVICE_PHOTOS } from "@/data/photos";
 import { SplitPhoto } from "./photo/SplitPhoto";
@@ -18,18 +18,24 @@ export function CatalogueBrowser() {
   const params = useSearchParams();
   const tab = tabFromParams(params.get("tab"), params.get("category"));
   const [query, setQuery] = useState("");
+  const group = SERVICE_GROUPS.find((g) => g.id === tab);
+  const intro = group ?? ALL_SERVICES_INTRO;
 
   // Next.js keeps useSearchParams in step with history.replaceState.
   const select = (t: GroupId | "all") => window.history.replaceState(null, "", t === "all" ? "/services" : `/services?tab=${t}`);
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
-    const group = SERVICE_GROUPS.find((g) => g.id === tab);
     return (group ? group.list(SERVICES) : SERVICES).filter((s) => !q || [s.name, s.summary, ...s.keywords].join(" ").toLowerCase().includes(q));
-  }, [tab, query]);
+  }, [group, query]);
 
   return (
     <div>
+      <div className="mb-14">
+        <p className="eyebrow">{group ? group.label : "Services"}</p>
+        <h1 className="display mt-4 max-w-3xl text-[clamp(2.6rem,6vw,5rem)] text-forest">{intro.heading}</h1>
+        <p className="mt-6 max-w-2xl text-lg leading-relaxed text-charcoal/65">{intro.intro}</p>
+      </div>
       <div className="sticky top-[72px] z-20 -mx-5 border-b border-charcoal/10 bg-ivory/95 px-5 py-4 sm:-mx-8 sm:px-8 lg:-mx-12 lg:px-12">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div className="relative w-full lg:max-w-sm">

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { CatalogueBrowser } from "@/components/CatalogueBrowser";
 import { syncLive } from "@/lib/live-data";
-import { PRICING_DISCLAIMER } from "@/data/pricing";
 
 export const metadata: Metadata = {
   title: "Services",
@@ -15,12 +14,7 @@ export default async function ServicesPage({ searchParams }: { searchParams: Pro
 
   return (
     <div className="container-x pb-28 pt-36 md:pt-44">
-      <p className="eyebrow">Services</p>
-      <h1 className="display mt-4 max-w-3xl text-[clamp(2.6rem,6vw,5rem)] text-forest">Everything your property needs, explained clearly.</h1>
-      <p className="mt-6 max-w-2xl text-charcoal/65">{PRICING_DISCLAIMER} Service availability varies by region and is confirmed when you enquire.</p>
-      <div className="mt-14">
-        <CatalogueBrowser />
-      </div>
+      <CatalogueBrowser />
     </div>
   );
 }

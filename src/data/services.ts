@@ -301,29 +301,58 @@ const COMMERCIAL = ["construction-cleaning", "medical-cleaning", "office-cleanin
 const OWN_MENU = ["restoration", "floor-care", "commercial"];
 
 /** Header menus and home-page rows. A service can sit in more than one. */
+/** heading and intro introduce the tab on the Services page. Commercial comes first. */
 export const SERVICE_GROUPS = [
-  {
-    id: "residential",
-    label: "Residential Cleaning",
-    short: "Residential",
-    title: "Residential cleaning",
-    list: (all: Service[]) => all.filter((s) => s.categories.some((c) => !OWN_MENU.includes(c))),
-    all: "/services?tab=residential",
-  },
   {
     id: "commercial",
     label: "Commercial Cleaning",
     short: "Commercial",
     title: "Commercial cleaning",
+    heading: "Clean workplaces, every time.",
+    intro: "Offices, clinics, building sites and end-of-tenancy cleans, on a schedule that suits your business. We work around your hours and agree the scope before we start.",
     list: (all: Service[]) => [
       ...COMMERCIAL.flatMap((slug) => all.filter((s) => s.slug === slug)),
       ...all.filter((s) => !COMMERCIAL.includes(s.slug) && s.categories.includes("commercial")),
     ],
     all: "/services?tab=commercial",
   },
-  { id: "restoration", label: "Restoration", short: "Restoration", title: "Restoration services", list: (all: Service[]) => all.filter((s) => s.categories.includes("restoration")), all: "/services?tab=restoration" },
-  { id: "floors", label: "Floor Services", short: "Floors", title: "Floor services", list: (all: Service[]) => all.filter((s) => s.categories.includes("floor-care")), all: "/services?tab=floors" },
+  {
+    id: "residential",
+    label: "Residential Cleaning",
+    short: "Residential",
+    title: "Residential cleaning",
+    heading: "A cleaner home, without the hassle.",
+    intro: "From carpets and curtains to a full move-out clean, we take care of the jobs you don't have time for, with methods matched to every surface.",
+    list: (all: Service[]) => all.filter((s) => s.categories.some((c) => !OWN_MENU.includes(c))),
+    all: "/services?tab=residential",
+  },
+  {
+    id: "restoration",
+    label: "Restoration",
+    short: "Restoration",
+    title: "Restoration services",
+    heading: "Back to normal after the unexpected.",
+    intro: "Flood and water damage, mould, and meth contamination, handled quickly and safely, from the first assessment through to clearance.",
+    list: (all: Service[]) => all.filter((s) => s.categories.includes("restoration")),
+    all: "/services?tab=restoration",
+  },
+  {
+    id: "floors",
+    label: "Floor Services",
+    short: "Floors",
+    title: "Floor services",
+    heading: "Floors that look new again.",
+    intro: "Tile and grout deep-cleaned, and vinyl and lino cleaned, stripped and polished, so hard-wearing floors look their best.",
+    list: (all: Service[]) => all.filter((s) => s.categories.includes("floor-care")),
+    all: "/services?tab=floors",
+  },
 ];
+
+/** Services page intro when "All services" is selected. */
+export const ALL_SERVICES_INTRO = {
+  heading: "Cleaning and restoration, done properly.",
+  intro: "Every service we offer for homes, workplaces and properties across New Zealand. Each one shows what's included and a starting price, so you know what to expect before you ask.",
+};
 
 export type GroupId = (typeof SERVICE_GROUPS)[number]["id"];
 
