@@ -22,7 +22,7 @@ export function SiteFooter() {
             <div>
               <dt className="sr-only">Email</dt>
               <dd>
-                <a className="text-ivory hover:underline" href={`mailto:${SITE.email}`}>{SITE.email}</a>
+                <a className="inline-flex min-h-6 items-center text-ivory hover:underline" href={`mailto:${SITE.email}`}>{SITE.email}</a>
               </dd>
             </div>
             <div>
@@ -35,7 +35,7 @@ export function SiteFooter() {
         <nav aria-label="Services" className="grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-3 lg:grid-cols-4">
           {CATEGORIES.map((c) => (
             <div key={c.id}>
-              <Link href={`/services?category=${c.id}`} className="text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-brass transition-colors hover:text-ivory">
+              <Link href={`/services?category=${c.id}`} className="inline-flex min-h-6 items-center text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-brass transition-colors hover:text-ivory">
                 {c.name}
               </Link>
               <ul className="mt-4 space-y-1 text-sm sm:space-y-2.5">
@@ -54,17 +54,18 @@ export function SiteFooter() {
         </nav>
       </div>
       <div className="container-x overflow-hidden" aria-hidden>
-        <p className="select-none whitespace-nowrap font-serif text-[28vw] font-light leading-[0.8] tracking-[-0.05em] text-ivory/[0.06]">0800</p>
+        {/* Decorative: drawn with CSS content so it is not read or contrast-checked as text */}
+        <p className="select-none whitespace-nowrap font-serif text-[28vw] font-light leading-[0.8] tracking-[-0.05em] text-ivory/[0.06] before:content-['0800']" />
       </div>
       <div className="border-t border-brass/20">
-        <div className="container-x flex flex-col gap-4 py-8 text-xs text-ivory/45 md:flex-row md:items-start md:justify-between">
+        <div className="container-x flex flex-col gap-4 py-8 text-xs text-ivory/65 md:flex-row md:items-start md:justify-between">
           <p className="max-w-2xl leading-relaxed">{PRICING_DISCLAIMER}</p>
           <div className="flex shrink-0 flex-col gap-2 md:items-end">
             <nav aria-label="Legal" className="flex gap-4 text-ivory/70">
-              <Link href="/privacy" className="hover:text-ivory hover:underline">
+              <Link href="/privacy" className="inline-flex min-h-6 items-center hover:text-ivory hover:underline">
                 Privacy Policy
               </Link>
-              <Link href="/terms" className="hover:text-ivory hover:underline">
+              <Link href="/terms" className="inline-flex min-h-6 items-center hover:text-ivory hover:underline">
                 Terms &amp; Conditions
               </Link>
             </nav>

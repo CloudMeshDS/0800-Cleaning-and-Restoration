@@ -62,7 +62,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <span className="intro-line block h-px w-40 bg-brass" />
           </div>
         </div>
-        <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-forest focus:px-5 focus:py-3 focus:text-ivory">
+        <a href="#main" className="fixed left-4 top-4 z-[100] -translate-y-[200%] rounded-full bg-forest px-5 py-3 text-ivory transition-transform focus:translate-y-0">
           Skip to content
         </a>
         <SiteHeader />

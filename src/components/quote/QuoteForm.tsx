@@ -140,8 +140,9 @@ export function QuoteForm({ initialServices, initialType, initialCategory }: { i
         <fieldset className="flex w-full rounded-full bg-stone p-1 sm:inline-flex sm:w-auto">
           <legend className="sr-only">Enquiry type</legend>
           {(["quote", "booking"] as const).map((t) => (
-            <label key={t} className={`flex-1 cursor-pointer rounded-full px-4 py-2.5 text-center text-[0.82rem] font-semibold transition sm:flex-none sm:px-5 sm:py-2 sm:text-sm ${req.type === t ? "bg-forest text-ivory" : "text-forest/70"}`}>
-              <input type="radio" name="type" value={t} checked={req.type === t} onChange={() => set("type", t)} className="sr-only" />
+            <label key={t} className={`relative flex-1 cursor-pointer rounded-full px-4 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-brass  py-2.5 text-center text-[0.82rem] font-semibold transition sm:flex-none sm:px-5 sm:py-2 sm:text-sm ${req.type === t ? "bg-forest text-ivory" : "text-forest/90"}`}>
+              {/* The real radio covers the whole pill, so its tap target is the pill */}
+              <input type="radio" name="type" value={t} checked={req.type === t} onChange={() => set("type", t)} className="absolute inset-0 size-full cursor-pointer appearance-none rounded-full opacity-0" />
               {t === "quote" ? "Request a quote" : "Request a booking"}
             </label>
           ))}
@@ -319,11 +320,11 @@ function ServicesStep({
                           {c.items.map((it) => {
                             const on = qtyOf(slug, it.id as PriceId) > 0;
                             return (
-                              <label key={it.id} className={`cursor-pointer rounded-full border px-4 py-2 text-sm transition ${on ? "border-forest bg-forest text-ivory" : "border-charcoal/15 hover:border-forest/50"}`}>
+                              <label key={it.id} className={`relative cursor-pointer rounded-full border px-4 py-2 text-sm transition has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-brass has-[:focus-visible]:ring-offset-2 ${on ? "border-forest bg-forest text-ivory" : "border-charcoal/15 hover:border-forest/50"}`}>
                                 <input
                                   type="radio"
                                   name={`size-${slug}`}
-                                  className="sr-only"
+                                  className="absolute inset-0 size-full cursor-pointer appearance-none rounded-full opacity-0"
                                   checked={on}
                                   onChange={() => setQty(slug, it.id as PriceId, 1, c.items.map((i) => i.id as PriceId))}
                                 />
@@ -486,8 +487,8 @@ function PropertyStep({ req, errors, set }: { req: QuoteRequest; errors: Errors;
           <legend className="label">Time of day</legend>
           <div className="flex flex-wrap gap-2">
             {TIME_PREFS.map((t) => (
-              <label key={t} className={`cursor-pointer rounded-full border px-4 py-2 text-sm transition ${req.preferredTime === t ? "border-forest bg-forest text-ivory" : "border-charcoal/15"}`}>
-                <input type="radio" name="time" className="sr-only" checked={req.preferredTime === t} onChange={() => set("preferredTime", t)} />
+              <label key={t} className={`relative cursor-pointer rounded-full border px-4 py-2 text-sm transition has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-brass has-[:focus-visible]:ring-offset-2 ${req.preferredTime === t ? "border-forest bg-forest text-ivory" : "border-charcoal/15"}`}>
+                <input type="radio" name="time" className="absolute inset-0 size-full cursor-pointer appearance-none rounded-full opacity-0" checked={req.preferredTime === t} onChange={() => set("preferredTime", t)} />
                 {t}
               </label>
             ))}
@@ -523,8 +524,8 @@ function ContactStep({ req, errors, set }: { req: QuoteRequest; errors: Errors; 
           <legend className="label">Preferred contact</legend>
           <div className="flex gap-2">
             {(["email", "phone"] as const).map((c) => (
-              <label key={c} className={`cursor-pointer rounded-full border px-4 py-2.5 text-sm capitalize transition ${req.contactPref === c ? "border-forest bg-forest text-ivory" : "border-charcoal/15"}`}>
-                <input type="radio" name="contactPref" className="sr-only" checked={req.contactPref === c} onChange={() => set("contactPref", c)} />
+              <label key={c} className={`relative cursor-pointer rounded-full border px-4 py-2.5 text-sm capitalize transition has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-brass has-[:focus-visible]:ring-offset-2 ${req.contactPref === c ? "border-forest bg-forest text-ivory" : "border-charcoal/15"}`}>
+                <input type="radio" name="contactPref" className="absolute inset-0 size-full cursor-pointer appearance-none rounded-full opacity-0" checked={req.contactPref === c} onChange={() => set("contactPref", c)} />
                 {c}
               </label>
             ))}

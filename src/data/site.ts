@@ -1,8 +1,7 @@
-/** Contact numbers – each takes calls and WhatsApp. The first is the primary line. */
-export const PHONES = [
-  { display: "+64 22 633 2500", tel: "tel:+64226332500", whatsapp: "https://wa.me/64226332500" },
-  { display: "+64 22 321 0362", tel: "tel:+64223210362", whatsapp: "https://wa.me/64223210362" },
-] as const;
+/** Contact numbers. The first is the primary line (calls and WhatsApp); the landline takes calls only. */
+const PRIMARY = { display: "+64 22 633 2500", tel: "tel:+64226332500", whatsapp: "https://wa.me/64226332500" };
+
+export const PHONES: readonly { display: string; tel: string; whatsapp?: string }[] = [PRIMARY, { display: "09 951 1836", tel: "tel:+6499511836" }];
 
 /** Business details shown across the site (header, footer, structured data). */
 export const SITE = {
@@ -12,9 +11,9 @@ export const SITE = {
   description:
     "Professional cleaning and property care for homes and businesses across New Zealand – carpets, curtains, upholstery, windows, floors and restoration.",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.0800cleaningandrestoration.co.nz",
-  phone: PHONES[0].display,
-  phoneHref: PHONES[0].tel,
-  whatsappHref: PHONES[0].whatsapp,
+  phone: PRIMARY.display,
+  phoneHref: PRIMARY.tel,
+  whatsappHref: PRIMARY.whatsapp,
   email: "sales@0800cleaningandrestoration.co.nz",
   hours: "Mon–Fri 7:30am–6pm · Sat 8am–2pm",
 } as const;

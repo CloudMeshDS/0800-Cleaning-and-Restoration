@@ -16,24 +16,26 @@ export function WhatsAppIcon({ className = "" }: { className?: string }) {
   );
 }
 
-/** Both numbers, each with Call and WhatsApp actions. */
+/** Both numbers, each with Call (and WhatsApp where that number has it). */
 export function ContactList({ tone = "light" }: { tone?: "light" | "dark" }) {
-  const sub = tone === "dark" ? "text-ivory/55 hover:text-ivory" : "text-charcoal/60 hover:text-forest";
+  const sub = tone === "dark" ? "text-ivory/75 hover:text-ivory" : "text-charcoal/75 hover:text-forest";
   const main = tone === "dark" ? "text-ivory" : "text-forest";
   return (
     <ul className="space-y-3">
       {PHONES.map((p) => (
         <li key={p.display}>
-          <a href={p.tel} className={`link-line font-serif text-lg ${main}`}>
+          <a href={p.tel} className={`link-line inline-block min-h-6 font-serif text-lg ${main}`}>
             {p.display}
           </a>
           <span className="mt-1 flex gap-4 text-[0.7rem] font-semibold uppercase tracking-[0.18em]">
-            <a href={p.tel} className={`flex items-center gap-1.5 transition-colors ${sub}`}>
+            <a href={p.tel} className={`flex min-h-6 items-center gap-1.5 transition-colors ${sub}`}>
               <Phone className="size-3" aria-hidden /> Call
             </a>
-            <a href={waLink(p.whatsapp)} target="_blank" rel="noopener noreferrer" className={`flex items-center gap-1.5 transition-colors ${sub}`}>
-              <WhatsAppIcon className="size-3.5" /> WhatsApp
-            </a>
+            {p.whatsapp && (
+              <a href={waLink(p.whatsapp)} target="_blank" rel="noopener noreferrer" className={`flex min-h-6 items-center gap-1.5 transition-colors ${sub}`}>
+                <WhatsAppIcon className="size-3.5" /> WhatsApp
+              </a>
+            )}
           </span>
         </li>
       ))}
@@ -73,7 +75,7 @@ export function FloatingContact() {
         }`}
       >
         <p className="eyebrow">Talk to us</p>
-        <p className="mt-2 text-sm text-charcoal/65">Call or WhatsApp either number.</p>
+        <p className="mt-2 text-sm text-charcoal/65">Call either number, or WhatsApp our mobile.</p>
         <div className="mt-4">
           <ContactList />
         </div>

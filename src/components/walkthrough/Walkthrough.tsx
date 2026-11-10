@@ -203,7 +203,7 @@ export function Walkthrough() {
                 <p className="display mt-2 text-[1.5rem] text-forest sm:text-[1.9rem] md:text-[2.2rem]">{c.title}</p>
                 <p className="mt-2 text-sm leading-relaxed text-charcoal/70 sm:text-[0.95rem]">{c.body}</p>
                 {c.href && (
-                  <Link href={c.href} className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-forest hover:underline">
+                  <Link href={c.href} className="mt-3 inline-flex min-h-6 items-center gap-1.5 text-sm font-semibold text-forest hover:underline">
                     Explore this service <ArrowRight className="size-3.5" aria-hidden />
                   </Link>
                 )}
