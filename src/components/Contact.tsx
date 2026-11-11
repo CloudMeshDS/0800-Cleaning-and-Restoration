@@ -43,7 +43,10 @@ export function ContactList({ tone = "light" }: { tone?: "light" | "dark" }) {
   );
 }
 
-/** Floating call / WhatsApp launcher, bottom-right on every page. */
+/**
+ * Floating call / WhatsApp launcher, bottom-right on every page. The wrapper is
+ * as big as the closed panel, so only the button and the open panel take taps.
+ */
 export function FloatingContact() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
@@ -65,13 +68,13 @@ export function FloatingContact() {
   if (pathname.startsWith("/quote")) return null;
 
   return (
-    <div ref={ref} className="fixed bottom-5 right-5 z-[80] flex flex-col items-end gap-3 md:bottom-8 md:right-8">
+    <div ref={ref} className="pointer-events-none fixed bottom-5 right-5 z-[80] flex flex-col items-end gap-3 md:bottom-8 md:right-8">
       <div
         id="contact-panel"
         role="dialog"
         aria-label="Call or WhatsApp us"
         className={`w-[min(18rem,calc(100vw-2.5rem))] origin-bottom-right rounded-[22px] border border-brass/25 bg-ivory p-5 shadow-(--shadow-lux) transition-[opacity,transform] duration-500 ease-(--ease-soft) ${
-          open ? "translate-y-0 scale-100 opacity-100" : "pointer-events-none translate-y-2 scale-95 opacity-0"
+          open ? "pointer-events-auto translate-y-0 scale-100 opacity-100" : "translate-y-2 scale-95 opacity-0"
         }`}
       >
         <p className="eyebrow">Talk to us</p>
@@ -86,7 +89,7 @@ export function FloatingContact() {
         aria-expanded={open}
         aria-controls="contact-panel"
         aria-label={open ? "Close contact options" : "Call or WhatsApp us"}
-        className="grid size-14 place-items-center rounded-full bg-forest text-ivory shadow-(--shadow-lux) ring-1 ring-brass/40 transition-transform duration-500 ease-(--ease-soft) hover:scale-105"
+        className="pointer-events-auto grid size-14 place-items-center rounded-full bg-forest text-ivory shadow-(--shadow-lux) ring-1 ring-brass/40 transition-transform duration-500 ease-(--ease-soft) hover:scale-105"
       >
         {open ? <X className="size-5" /> : <WhatsAppIcon className="size-6" />}
       </button>

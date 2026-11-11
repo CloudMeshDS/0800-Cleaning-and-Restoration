@@ -16,13 +16,15 @@ import { SplitPhoto } from "./photo/SplitPhoto";
  */
 export function CatalogueBrowser() {
   const params = useSearchParams();
-  const tab = tabFromParams(params.get("tab"), params.get("category"));
+  // ?tab= comes from the header menus and shows one group alone; the filter buttons use ?filter=.
+  const fromHeader = params.has("tab") || params.has("category");
+  const tab = tabFromParams(params.get("tab") ?? params.get("filter"), params.get("category"));
   const [query, setQuery] = useState("");
   const group = SERVICE_GROUPS.find((g) => g.id === tab);
   const intro = group ?? ALL_SERVICES_INTRO;
 
   // Next.js keeps useSearchParams in step with history.replaceState.
-  const select = (t: GroupId | "all") => window.history.replaceState(null, "", t === "all" ? "/services" : `/services?tab=${t}`);
+  const select = (t: GroupId | "all") => window.history.replaceState(null, "", t === "all" ? "/services" : `/services?filter=${t}`);
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -36,7 +38,7 @@ export function CatalogueBrowser() {
         <h1 className="display mt-4 max-w-3xl text-[clamp(2.6rem,6vw,5rem)] text-forest">{intro.heading}</h1>
         <p className="mt-6 max-w-2xl text-lg leading-relaxed text-charcoal/65">{intro.intro}</p>
       </div>
-      <div className="sticky top-[72px] z-20 -mx-5 border-b border-charcoal/10 bg-ivory/95 px-5 py-4 sm:-mx-8 sm:px-8 lg:-mx-12 lg:px-12">
+      <div className="z-20 -mx-5 border-b lg:sticky lg:top-[72px] border-charcoal/10 bg-ivory/95 px-5 py-4 sm:-mx-8 sm:px-8 lg:-mx-12 lg:px-12">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div className="relative w-full lg:max-w-sm">
             <Search className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-charcoal/40" aria-hidden />
@@ -50,21 +52,24 @@ export function CatalogueBrowser() {
               </button>
             )}
           </div>
-          <div role="tablist" aria-label="Filter services" className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 [scrollbar-width:none]">
-            {[{ id: "all" as const, label: "All services" }, ...SERVICE_GROUPS].map((c) => (
-              <button
-                key={c.id}
-                role="tab"
-                aria-selected={tab === c.id}
-                onClick={() => select(c.id)}
-                className={`shrink-0 rounded-full border px-4 py-2 text-sm font-medium transition ${
-                  tab === c.id ? "border-forest bg-forest text-ivory" : "border-charcoal/15 text-charcoal/70 hover:border-forest/50"
-                }`}
-              >
-                {c.label}
-              </button>
-            ))}
-          </div>
+          {/* Filters only on the full list; a header tab shows just its own services */}
+          {!fromHeader && (
+            <div role="tablist" aria-label="Filter services" className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 [scrollbar-width:none]">
+              {[{ id: "all" as const, label: "All services" }, ...SERVICE_GROUPS].map((c) => (
+                <button
+                  key={c.id}
+                  role="tab"
+                  aria-selected={tab === c.id}
+                  onClick={() => select(c.id)}
+                  className={`shrink-0 rounded-full border px-4 py-2 text-sm font-medium transition ${
+                    tab === c.id ? "border-forest bg-forest text-ivory" : "border-charcoal/15 text-charcoal/70 hover:border-forest/50"
+                  }`}
+                >
+                  {c.label}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
